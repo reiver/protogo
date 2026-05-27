@@ -15,6 +15,10 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 		receiver.page = PageHome
 	}
 
+	if receiver.chatClick.Clicked(gtx) {
+		receiver.page = PageChat
+	}
+
 	if receiver.selectedPerson < 0 || receiver.selectedPerson >= len(receiver.people) {
 		receiver.page = PageHome
 		return layout.Dimensions{}
@@ -46,6 +50,12 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						return receiver.layoutResumesSection(gtx, person.Resumes)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							btn := material.Button(receiver.theme, &receiver.chatClick, "Chat")
+							return btn.Layout(gtx)
+						})
 					}),
 				)
 			})

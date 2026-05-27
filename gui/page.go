@@ -7,4 +7,5 @@ const (
 	PagePersonDetail
 	PageGroupDetail
 	PageResumeDetail
+	PageChat
 )

@@ -21,8 +21,13 @@ type App struct {
 	groupClicks  []widget.Clickable
 	resumeClicks []widget.Clickable
 	backClick    widget.Clickable
+	chatClick    widget.Clickable
+	sendClick    widget.Clickable
+	chatEditor   widget.Editor
 
-	homeList layout.List
+	homeList   layout.List
+	resumeList layout.List
+	chatList   layout.List
 }
 
 func newApp() *App {
@@ -43,6 +48,17 @@ func newApp() *App {
 		homeList: layout.List{
 			Axis: layout.Vertical,
 		},
+		resumeList: layout.List{
+			Axis: layout.Vertical,
+		},
+		chatEditor: widget.Editor{
+			SingleLine: true,
+			Submit:     true,
+		},
+		chatList: layout.List{
+			Axis:      layout.Vertical,
+			Alignment: layout.End,
+		},
 	}
 }
 
@@ -54,6 +70,8 @@ func (receiver *App) Layout(gtx layout.Context) layout.Dimensions {
 		return receiver.layoutGroupDetail(gtx)
 	case PageResumeDetail:
 		return receiver.layoutResumeDetail(gtx)
+	case PageChat:
+		return receiver.layoutChat(gtx)
 	default:
 		return receiver.layoutHome(gtx)
 	}

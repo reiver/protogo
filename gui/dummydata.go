@@ -1,16 +1,150 @@
 package gui
 
 type Person struct {
-	Name    string
-	Title   string
-	Company string
-	Note    string
-	Resumes []Resume
+	Name     string
+	Title    string
+	Company  string
+	Note     string
+	Resumes  []Resume
+	Messages []ChatMessage
+}
+
+type ChatMessage struct {
+	FromMe    bool
+	Text      string
+	Timestamp string
 }
 
 type Resume struct {
-	Label   string
-	Content string
+	Label string
+
+	Basics       ResumeBasics
+	Work         []ResumeWork
+	Volunteer    []ResumeVolunteer
+	Education    []ResumeEducation
+	Awards       []ResumeAward
+	Certificates []ResumeCertificate
+	Publications []ResumePublication
+	Skills       []ResumeSkill
+	Languages    []ResumeLanguage
+	Interests    []ResumeInterest
+	References   []ResumeReference
+	Projects     []ResumeProject
+}
+
+type ResumeBasics struct {
+	Name     string
+	Label    string
+	Image    string
+	Email    string
+	Phone    string
+	URL      string
+	Summary  string
+	Location ResumeLocation
+	Profiles []ResumeProfile
+}
+
+type ResumeLocation struct {
+	Address     string
+	PostalCode  string
+	City        string
+	CountryCode string
+	Region      string
+}
+
+type ResumeProfile struct {
+	Network  string
+	Username string
+	URL      string
+}
+
+type ResumeWork struct {
+	Name        string
+	Location    string
+	Description string
+	Position    string
+	URL         string
+	StartDate   string
+	EndDate     string
+	Summary     string
+	Highlights  []string
+}
+
+type ResumeVolunteer struct {
+	Organization string
+	Position     string
+	URL          string
+	StartDate    string
+	EndDate      string
+	Summary      string
+	Highlights   []string
+}
+
+type ResumeEducation struct {
+	Institution string
+	URL         string
+	Area        string
+	StudyType   string
+	StartDate   string
+	EndDate     string
+	Score       string
+	Courses     []string
+}
+
+type ResumeAward struct {
+	Title   string
+	Date    string
+	Awarder string
+	Summary string
+}
+
+type ResumeCertificate struct {
+	Name   string
+	Date   string
+	URL    string
+	Issuer string
+}
+
+type ResumePublication struct {
+	Name        string
+	Publisher   string
+	ReleaseDate string
+	URL         string
+	Summary     string
+}
+
+type ResumeSkill struct {
+	Name     string
+	Level    string
+	Keywords []string
+}
+
+type ResumeLanguage struct {
+	Language string
+	Fluency  string
+}
+
+type ResumeInterest struct {
+	Name     string
+	Keywords []string
+}
+
+type ResumeReference struct {
+	Name      string
+	Reference string
+}
+
+type ResumeProject struct {
+	Name        string
+	Description string
+	Highlights  []string
+	Keywords    []string
+	Roles       []string
+	StartDate   string
+	EndDate     string
+	URL         string
+	Entity      string
+	Type        string
 }
 
 type Group struct {
@@ -27,9 +161,82 @@ func dummyPeople() []Person {
 			Note:    "Met at GopherCon 2025. Interested in distributed systems and ActivityPub.",
 			Resumes: []Resume{
 				{
-					Label:   "Software Engineer Resume",
-					Content: "10 years experience in Go, distributed systems, and API design.",
+					Label: "Software Engineer Resume",
+					Basics: ResumeBasics{
+						Name:    "Alice Zhang",
+						Label:   "Senior Backend Engineer",
+						Email:   "alice@example.com",
+						Phone:   "+1-604-555-0101",
+						URL:     "https://alicezhang.dev",
+						Summary: "Backend engineer with 10 years of experience building distributed systems, APIs, and federation protocols in Go.",
+						Location: ResumeLocation{
+							City:        "Vancouver",
+							CountryCode: "CA",
+							Region:      "British Columbia",
+						},
+						Profiles: []ResumeProfile{
+							{Network: "Fediverse", Username: "@alice@meshwork.social", URL: "https://meshwork.social/@alice"},
+							{Network: "GitHub", Username: "alicezhang", URL: "https://github.com/alicezhang"},
+						},
+					},
+					Work: []ResumeWork{
+						{
+							Name:      "Meshwork Labs",
+							Position:  "Senior Backend Engineer",
+							URL:       "https://meshwork.example.com",
+							StartDate: "2022-03",
+							Summary:   "Lead engineer on the federation team, building ActivityPub-based services in Go.",
+							Highlights: []string{
+								"Designed and built a federated messaging system handling 50k messages/day",
+								"Implemented HTTP Signatures and WebFinger for inter-server authentication",
+							},
+						},
+						{
+							Name:      "DataFlow Inc.",
+							Position:  "Backend Engineer",
+							StartDate: "2018-06",
+							EndDate:   "2022-02",
+							Summary:   "Built data pipeline services and REST APIs.",
+							Highlights: []string{
+								"Reduced API response latency by 40% through caching redesign",
+							},
+						},
+					},
+					Education: []ResumeEducation{
+						{
+							Institution: "University of British Columbia",
+							Area:        "Computer Science",
+							StudyType:   "B.Sc.",
+							StartDate:   "2012-09",
+							EndDate:     "2016-05",
+						},
+					},
+					Skills: []ResumeSkill{
+						{Name: "Go", Level: "Expert", Keywords: []string{"concurrency", "net/http", "testing"}},
+						{Name: "Distributed Systems", Level: "Advanced", Keywords: []string{"ActivityPub", "federation", "consensus"}},
+						{Name: "Databases", Level: "Advanced", Keywords: []string{"PostgreSQL", "Redis", "SQLite"}},
+					},
+					Languages: []ResumeLanguage{
+						{Language: "English", Fluency: "Native"},
+						{Language: "Mandarin", Fluency: "Fluent"},
+					},
+					Projects: []ResumeProject{
+						{
+							Name:        "go-activitypub",
+							Description: "Open-source Go library for ActivityPub server implementations.",
+							URL:         "https://github.com/alicezhang/go-activitypub",
+							Roles:       []string{"Creator", "Maintainer"},
+							Keywords:    []string{"Go", "ActivityPub", "Federation"},
+						},
+					},
 				},
+			},
+			Messages: []ChatMessage{
+				{FromMe: false, Text: "Hey! Great meeting you at GopherCon. Love your talk on federation.", Timestamp: "2025-11-15 14:32"},
+				{FromMe: true, Text: "Thanks Alice! Your work on ActivityPub at Meshwork is really impressive.", Timestamp: "2025-11-15 14:35"},
+				{FromMe: false, Text: "We should chat more about the WebFinger stuff you mentioned.", Timestamp: "2025-11-15 14:37"},
+				{FromMe: true, Text: "Definitely. I've been working on a Go library for it.", Timestamp: "2025-11-15 14:40"},
+				{FromMe: false, Text: "Oh nice! Send me the repo when you get a chance.", Timestamp: "2025-11-15 14:41"},
 			},
 		},
 		{
@@ -38,6 +245,12 @@ func dummyPeople() []Person {
 			Company: "FediCorp",
 			Note:    "Met at Fediverse Developer Summit. Working on decentralized identity.",
 			Resumes: []Resume{},
+			Messages: []ChatMessage{
+				{FromMe: false, Text: "Hey, good to connect! Are you going to the Fediverse summit next month?", Timestamp: "2025-12-01 09:15"},
+				{FromMe: true, Text: "Wouldn't miss it. Are you presenting?", Timestamp: "2025-12-01 10:22"},
+				{FromMe: false, Text: "Yeah, doing a session on decentralized identity. Would love your feedback on the slides.", Timestamp: "2025-12-01 10:30"},
+				{FromMe: true, Text: "Happy to take a look. Send them over whenever.", Timestamp: "2025-12-01 10:33"},
+			},
 		},
 		{
 			Name:    "Carol Reyes",
@@ -46,12 +259,58 @@ func dummyPeople() []Person {
 			Note:    "Met at Vancouver Tech Meetup. Does contract work for startups.",
 			Resumes: []Resume{
 				{
-					Label:   "UX Design Portfolio",
-					Content: "8 years of UX design for web and mobile. Specializes in B2B SaaS.",
+					Label: "UX Design Portfolio",
+					Basics: ResumeBasics{
+						Name:    "Carol Reyes",
+						Label:   "UX Designer",
+						Email:   "carol@example.com",
+						URL:     "https://carolreyes.design",
+						Summary: "UX designer with 8 years of experience in web and mobile. Specializes in B2B SaaS products.",
+						Location: ResumeLocation{
+							City:        "Vancouver",
+							CountryCode: "CA",
+							Region:      "British Columbia",
+						},
+					},
+					Work: []ResumeWork{
+						{
+							Name:      "Various Startups",
+							Position:  "Freelance UX Designer",
+							StartDate: "2019-01",
+							Summary:   "Contract UX design for early-stage startups in fintech and healthtech.",
+							Highlights: []string{
+								"Redesigned onboarding flow for a fintech app, improving completion rate by 35%",
+								"Created design system used across 3 product teams",
+							},
+						},
+					},
+					Skills: []ResumeSkill{
+						{Name: "UX Design", Level: "Expert", Keywords: []string{"Figma", "user research", "prototyping"}},
+						{Name: "Frontend", Level: "Intermediate", Keywords: []string{"HTML", "CSS", "React"}},
+					},
 				},
 				{
-					Label:   "Consulting CV",
-					Content: "Independent UX consultant since 2021. Clients include fintech and healthtech.",
+					Label: "Consulting CV",
+					Basics: ResumeBasics{
+						Name:    "Carol Reyes",
+						Label:   "Independent UX Consultant",
+						Email:   "carol@example.com",
+						Summary: "Independent UX consultant since 2021. Clients include fintech and healthtech companies.",
+					},
+					Work: []ResumeWork{
+						{
+							Name:      "Self-Employed",
+							Position:  "UX Consultant",
+							StartDate: "2021-01",
+							Summary:   "Providing UX strategy, audits, and design services to B2B SaaS companies.",
+						},
+					},
+					Certificates: []ResumeCertificate{
+						{Name: "Google UX Design Certificate", Date: "2021-06", Issuer: "Google"},
+					},
+					References: []ResumeReference{
+						{Name: "Jordan Lee", Reference: "Carol transformed our product experience. Her research-driven approach led to measurable improvements in user retention."},
+					},
 				},
 			},
 		},
@@ -62,8 +321,70 @@ func dummyPeople() []Person {
 			Note:    "Spoke on a panel about federation protocols. Very knowledgeable about Mastodon internals.",
 			Resumes: []Resume{
 				{
-					Label:   "Executive Resume",
-					Content: "15 years in engineering leadership. Founded two startups.",
+					Label: "Executive Resume",
+					Basics: ResumeBasics{
+						Name:    "David Park",
+						Label:   "CTO & Engineering Leader",
+						Email:   "david@openrelay.example.com",
+						URL:     "https://davidpark.io",
+						Summary: "Engineering leader with 15 years of experience. Founded two startups. Deep expertise in federation protocols and open-source infrastructure.",
+						Location: ResumeLocation{
+							City:        "Toronto",
+							CountryCode: "CA",
+							Region:      "Ontario",
+						},
+						Profiles: []ResumeProfile{
+							{Network: "Fediverse", Username: "@david@openrelay.social", URL: "https://openrelay.social/@david"},
+						},
+					},
+					Work: []ResumeWork{
+						{
+							Name:      "OpenRelay Inc.",
+							Position:  "CTO",
+							StartDate: "2020-01",
+							Summary:   "Leading engineering for an open-source federation relay service.",
+							Highlights: []string{
+								"Grew engineering team from 2 to 14",
+								"Architected relay system handling 1M+ activities/day",
+							},
+						},
+						{
+							Name:      "SocialMesh (acquired)",
+							Position:  "Co-Founder & CTO",
+							StartDate: "2016-03",
+							EndDate:   "2019-12",
+							Summary:   "Built a decentralized social networking platform.",
+						},
+					},
+					Education: []ResumeEducation{
+						{
+							Institution: "University of Toronto",
+							Area:        "Software Engineering",
+							StudyType:   "M.Eng.",
+							StartDate:   "2009-09",
+							EndDate:     "2011-05",
+						},
+					},
+					Awards: []ResumeAward{
+						{Title: "Top 40 Under 40 in Canadian Tech", Date: "2023", Awarder: "TechTO"},
+					},
+					Publications: []ResumePublication{
+						{
+							Name:        "Scaling Federation: Lessons from Building a Relay Network",
+							Publisher:   "ACM Queue",
+							ReleaseDate: "2024-03",
+							Summary:     "Practical lessons on scaling ActivityPub relay infrastructure.",
+						},
+					},
+					Skills: []ResumeSkill{
+						{Name: "Engineering Leadership", Level: "Expert", Keywords: []string{"team building", "architecture", "strategy"}},
+						{Name: "Federation Protocols", Level: "Expert", Keywords: []string{"ActivityPub", "Mastodon", "relays"}},
+						{Name: "Go", Level: "Advanced", Keywords: []string{"microservices", "performance"}},
+					},
+					Languages: []ResumeLanguage{
+						{Language: "English", Fluency: "Native"},
+						{Language: "Korean", Fluency: "Conversational"},
+					},
 				},
 			},
 		},
