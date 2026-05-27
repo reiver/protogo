@@ -1,4 +1,4 @@
-package main
+package gui
 
 import (
 	"os"
@@ -7,17 +7,20 @@ import (
 	"gioui.org/op"
 	"gioui.org/unit"
 
+	"protogo/cfg"
 	"protogo/srv/log"
 )
 
-func window() {
+func Run() {
 	log := logsrv.Begin()
 	defer log.End()
+
+	application := newApp()
 
 	go func() {
 		w := new(app.Window)
 		w.Option(
-			app.Title("ProToGo"),
+			app.Title(cfg.Name),
 			app.Size(unit.Dp(800), unit.Dp(600)),
 		)
 
@@ -31,6 +34,7 @@ func window() {
 				os.Exit(0)
 			case app.FrameEvent:
 				gtx := app.NewContext(&ops, e)
+				application.Layout(gtx)
 				e.Frame(gtx.Ops)
 			}
 		}
