@@ -1,29 +1,7 @@
-# protogo-app
+# protogo
 
-**protogo-app** is a mobile front-end for **protogo**.
-**protogo** is a career, gig, and business focused decentralized social-media (DeSo) platform, for the Fediverse and Social Web.
-
-## Technology
-
-**protogo-app** is a cross-platform mobile app and progressive-web-app (PWA).
-
-It is written in the Go programming-language (Go) and is compiled to WebAssembly (WASM).
-The Go code creates the UI by adding HTML and CSS using DOM manipulation.
-
-## Running
-
-To run **protogo-app** you need to run it from an HTTP server, and then open up `main.html` from web-browser.
-
-## Building
-
-To build **protogo-app** run a command similar to the following:
-
-```
-GOOS=js GOARCH=wasm go build -o main.wasm
-```
+**protogo** is a career, gig, and business focused application (front-end) for the Fediverse and Social Web.
 
 ## Author
 
 Software **protogo** was written by [Charles Iliya Krempeaux](http://reiver.link)
-
-**protogo** also makes use of [Feather Icons](https://github.com/feathericons/feather).
