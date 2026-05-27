@@ -6,6 +6,7 @@ import (
 
 	"gioui.org/layout"
 	"gioui.org/unit"
+	"gioui.org/widget"
 	"gioui.org/widget/material"
 )
 
@@ -44,7 +45,7 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 						return layoutDetailSection(gtx, receiver.theme, "Notes", person.Note)
 					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return layoutResumesSection(gtx, receiver.theme, person.Resumes)
+						return receiver.layoutResumesSection(gtx, person.Resumes)
 					}),
 				)
 			})
@@ -67,7 +68,22 @@ func layoutDetailSection(gtx layout.Context, th *material.Theme, label string, v
 	})
 }
 
-func layoutResumesSection(gtx layout.Context, th *material.Theme, resumes []Resume) layout.Dimensions {
+func (receiver *App) layoutResumesSection(gtx layout.Context, resumes []Resume) layout.Dimensions {
+	var th *material.Theme = receiver.theme
+
+	// Ensure we have enough clickables for the resumes.
+	for len(receiver.resumeClicks) < len(resumes) {
+		receiver.resumeClicks = append(receiver.resumeClicks, widget.Clickable{})
+	}
+
+	// Handle resume clicks.
+	for i := range resumes {
+		if receiver.resumeClicks[i].Clicked(gtx) {
+			receiver.selectedResume = i
+			receiver.page = PageResumeDetail
+		}
+	}
+
 	if 0 == len(resumes) {
 		return layout.Inset{Bottom: unit.Dp(12)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
@@ -94,20 +110,14 @@ func layoutResumesSection(gtx layout.Context, th *material.Theme, resumes []Resu
 	}))
 
 	for i := range resumes {
-		var resume Resume = resumes[i]
+		var resumeIndex int = i
+		var resume Resume = resumes[resumeIndex]
 		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
-					return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return material.Subtitle2(th, resume.Label).Layout(gtx)
-						}),
-						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							lbl := material.Body2(th, resume.Content)
-							lbl.Color = color.NRGBA{R: 0x44, G: 0x44, B: 0x44, A: 0xFF}
-							return lbl.Layout(gtx)
-						}),
-					)
+			return material.Clickable(gtx, &receiver.resumeClicks[resumeIndex], func(gtx layout.Context) layout.Dimensions {
+				return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
+						return material.Subtitle2(th, resume.Label).Layout(gtx)
+					})
 				})
 			})
 		}))

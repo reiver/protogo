@@ -1,9 +1,9 @@
 package main
 
 import (
-	"protogo/gui"
+	guipkg "protogo/gui"
 )
 
 func gui() {
-	gui.Run()
+	guipkg.Run()
 }

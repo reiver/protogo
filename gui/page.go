@@ -6,4 +6,5 @@ const (
 	PageHome         Page = iota
 	PagePersonDetail
 	PageGroupDetail
+	PageResumeDetail
 )

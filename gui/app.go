@@ -12,12 +12,14 @@ type App struct {
 	page           Page
 	selectedPerson int
 	selectedGroup  int
+	selectedResume int
 
 	people []Person
 	groups []Group
 
 	personClicks []widget.Clickable
 	groupClicks  []widget.Clickable
+	resumeClicks []widget.Clickable
 	backClick    widget.Clickable
 
 	homeList layout.List
@@ -50,6 +52,8 @@ func (receiver *App) Layout(gtx layout.Context) layout.Dimensions {
 		return receiver.layoutPersonDetail(gtx)
 	case PageGroupDetail:
 		return receiver.layoutGroupDetail(gtx)
+	case PageResumeDetail:
+		return receiver.layoutResumeDetail(gtx)
 	default:
 		return receiver.layoutHome(gtx)
 	}
