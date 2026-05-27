@@ -1,6 +1,7 @@
 # protogo
 
 **protogo** is a career, gig, and business focused application (front-end) for the Fediverse and Social Web.
+This includes a focus on 1-on-1 and group chat.
 
 ## Building
 
