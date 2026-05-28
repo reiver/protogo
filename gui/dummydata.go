@@ -159,7 +159,7 @@ type Group struct {
 
 func dummyMe() Person {
 	return Person{
-		Name:    "Charles Krempeaux",
+		Name:    "Charles Iliya Krempeaux",
 		Title:   "Software Engineer",
 		Company: "ProToGo",
 		FediID:  "@reiver@mastodon.social",
@@ -167,7 +167,7 @@ func dummyMe() Person {
 			{
 				Label: "My Resume",
 				Basics: ResumeBasics{
-					Name:    "Charles Krempeaux",
+					Name:    "Charles Iliya Krempeaux",
 					Label:   "Software Engineer",
 					Email:   "charles@example.com",
 					URL:     "https://changelog.ca",
@@ -179,12 +179,13 @@ func dummyMe() Person {
 					},
 					Profiles: []ResumeProfile{
 						{Network: "Fediverse", Username: "@reiver@mastodon.social", URL: "https://mastodon.social/@reiver"},
+						{Network: "Codeberg", Username: "reiver", URL: "https://codeberg.org/reiver"},
 						{Network: "GitHub", Username: "reiver", URL: "https://github.com/reiver"},
 					},
 				},
 				Skills: []ResumeSkill{
 					{Name: "Go", Level: "Expert", Keywords: []string{"concurrency", "networking", "CLI tools"}},
-					{Name: "Fediverse", Level: "Expert", Keywords: []string{"ActivityPub", "WebFinger", "federation"}},
+					{Name: "Fediverse", Level: "Expert", Keywords: []string{"ActivityPub", "NodeInfo", "WebFinger", "federation"}},
 				},
 			},
 		},
