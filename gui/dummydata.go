@@ -4,6 +4,7 @@ type Person struct {
 	Name     string
 	Title    string
 	Company  string
+	FediID   string
 	Note     string
 	Favorite bool
 	Resumes  []Resume
@@ -162,6 +163,7 @@ func dummyPeople() []Person {
 			Name:     "Alice Zhang",
 			Title:    "Senior Backend Engineer",
 			Company:  "Meshwork Labs",
+			FediID:   "@alice@meshwork.social",
 			Favorite: true,
 			Note:     "Met at GopherCon 2025. Interested in distributed systems and ActivityPub.",
 			Resumes: []Resume{
@@ -248,6 +250,7 @@ func dummyPeople() []Person {
 			Name:    "Bob Okafor",
 			Title:   "Product Manager",
 			Company: "FediCorp",
+			FediID:  "@bob@fedicorp.example",
 			Note:    "Met at Fediverse Developer Summit. Working on decentralized identity.",
 			Resumes: []Resume{},
 			Messages: []ChatMessage{
@@ -323,6 +326,7 @@ func dummyPeople() []Person {
 			Name:     "David Park",
 			Title:    "CTO",
 			Company:  "OpenRelay Inc.",
+			FediID:   "@david@openrelay.social",
 			Favorite: true,
 			Note:     "Spoke on a panel about federation protocols. Very knowledgeable about Mastodon internals.",
 			Resumes: []Resume{
@@ -398,6 +402,7 @@ func dummyPeople() []Person {
 			Name:    "Fatima Al-Rashid",
 			Title:   "DevRel Engineer",
 			Company: "Meshwork Labs",
+			FediID:  "@fatima@meshwork.social",
 			Note:    "Gave a great talk on onboarding developers to the Fediverse.",
 			Resumes: []Resume{},
 		},
