@@ -98,24 +98,6 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 	)
 }
 
-func (receiver *App) layoutFavoriteButton(gtx layout.Context, favorited bool) layout.Dimensions {
-	return layout.Inset{Bottom: unit.Dp(12)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		var label string
-		if favorited {
-			label = "★ Favorited"
-		} else {
-			label = "☆ Add to Favorites"
-		}
-		btn := material.Button(receiver.theme, &receiver.favClick, label)
-		if favorited {
-			btn.Background = color.NRGBA{R: 0xFF, G: 0xB3, B: 0x00, A: 0xFF} // amber
-		} else {
-			btn.Background = color.NRGBA{R: 0x99, G: 0x99, B: 0x99, A: 0xFF} // gray
-		}
-		return btn.Layout(gtx)
-	})
-}
-
 func layoutIconButton(gtx layout.Context, click *widget.Clickable, iconData []byte, bg color.NRGBA) layout.Dimensions {
 	icon, _ := widget.NewIcon(iconData)
 

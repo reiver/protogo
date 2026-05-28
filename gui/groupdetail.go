@@ -1,11 +1,14 @@
 package gui
 
 import (
+	"fmt"
 	"image/color"
 
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
+
+	"golang.org/x/exp/shiny/materialdesign/icons"
 )
 
 func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
@@ -31,10 +34,25 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 
 	var widgets []layout.Widget
 
+	// Profile header with banner, avatar, favorite + chat icons.
 	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
-		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Top: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return receiver.layoutFavoriteButton(gtx, group.Favorite)
-		})
+		var favIconData []byte
+		var favColor color.NRGBA
+		if group.Favorite {
+			favIconData = icons.ToggleStar
+			favColor = color.NRGBA{R: 0xFF, G: 0xB3, B: 0x00, A: 0xFF}
+		} else {
+			favIconData = icons.ToggleStarBorder
+			favColor = color.NRGBA{R: 0x99, G: 0x99, B: 0x99, A: 0xFF}
+		}
+		return layoutProfileHeader(gtx, receiver.theme, group.Name, fmt.Sprintf("%d members", len(group.Members)), "", "",
+			func(gtx layout.Context) layout.Dimensions {
+				return layoutIconButton(gtx, &receiver.favClick, favIconData, favColor)
+			},
+			func(gtx layout.Context) layout.Dimensions {
+				return layoutIconButton(gtx, &receiver.groupChatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
+			},
+		)
 	})
 
 	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
@@ -46,15 +64,8 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 	})
 
 	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
-		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Bottom: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 			return receiver.layoutMembersList(gtx, group.Members)
-		})
-	})
-
-	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
-		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Top: unit.Dp(8), Bottom: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			btn := material.Button(receiver.theme, &receiver.groupChatClick, "Group Chat")
-			return btn.Layout(gtx)
 		})
 	})
 
