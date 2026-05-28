@@ -14,6 +14,11 @@ import (
 	"golang.org/x/exp/shiny/materialdesign/icons"
 )
 
+var navProfileIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.SocialPerson)
+	return icon
+}()
+
 var navContactsIcon *widget.Icon = func() *widget.Icon {
 	icon, _ := widget.NewIcon(icons.SocialPeople)
 	return icon
@@ -25,6 +30,9 @@ var navChatsIcon *widget.Icon = func() *widget.Icon {
 }()
 
 func (receiver *App) layoutBottomNav(gtx layout.Context) layout.Dimensions {
+	if receiver.navProfileClick.Clicked(gtx) {
+		receiver.page = PageProfile
+	}
 	if receiver.navContactsClick.Clicked(gtx) {
 		receiver.page = PageHome
 	}
@@ -49,6 +57,9 @@ func (receiver *App) layoutBottomNav(gtx layout.Context) layout.Dimensions {
 		layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 			return layout.Inset{Top: unit.Dp(1)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+						return layoutNavTab(gtx, receiver.theme, &receiver.navProfileClick, navProfileIcon, "Profile", receiver.page == PageProfile)
+					}),
 					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 						return layoutNavTab(gtx, receiver.theme, &receiver.navContactsClick, navContactsIcon, "Contacts", receiver.page == PageHome)
 					}),

@@ -157,6 +157,40 @@ type Group struct {
 	Messages []ChatMessage
 }
 
+func dummyMe() Person {
+	return Person{
+		Name:    "Charles Krempeaux",
+		Title:   "Software Engineer",
+		Company: "ProToGo",
+		FediID:  "@reiver@mastodon.social",
+		Resumes: []Resume{
+			{
+				Label: "My Resume",
+				Basics: ResumeBasics{
+					Name:    "Charles Krempeaux",
+					Label:   "Software Engineer",
+					Email:   "charles@example.com",
+					URL:     "https://changelog.ca",
+					Summary: "Software engineer passionate about the Fediverse, decentralized systems, and building tools for the Social Web.",
+					Location: ResumeLocation{
+						City:        "Vancouver",
+						CountryCode: "CA",
+						Region:      "British Columbia",
+					},
+					Profiles: []ResumeProfile{
+						{Network: "Fediverse", Username: "@reiver@mastodon.social", URL: "https://mastodon.social/@reiver"},
+						{Network: "GitHub", Username: "reiver", URL: "https://github.com/reiver"},
+					},
+				},
+				Skills: []ResumeSkill{
+					{Name: "Go", Level: "Expert", Keywords: []string{"concurrency", "networking", "CLI tools"}},
+					{Name: "Fediverse", Level: "Expert", Keywords: []string{"ActivityPub", "WebFinger", "federation"}},
+				},
+			},
+		},
+	}
+}
+
 func dummyPeople() []Person {
 	return []Person{
 		{
