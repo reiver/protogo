@@ -125,20 +125,28 @@ func (receiver *App) layoutPersonItem(gtx layout.Context, index int) layout.Dime
 		return layout.Inset{Top: unit.Dp(2), Bottom: unit.Dp(2), Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx,
 			func(gtx layout.Context) layout.Dimensions {
 				return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
-					return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return material.Body1(receiver.theme, person.Name).Layout(gtx)
+							return layoutAvatar(gtx, receiver.theme, person.Name, unit.Dp(40))
 						}),
-						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							var subtitle string
-							if "" != person.Company {
-								subtitle = fmt.Sprintf("%s — %s", person.Title, person.Company)
-							} else {
-								subtitle = person.Title
-							}
-							label := material.Caption(receiver.theme, subtitle)
-							label.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
-							return label.Layout(gtx)
+						layout.Rigid(layout.Spacer{Width: unit.Dp(12)}.Layout),
+						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									return material.Body1(receiver.theme, person.Name).Layout(gtx)
+								}),
+								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+									var subtitle string
+									if "" != person.Company {
+										subtitle = fmt.Sprintf("%s — %s", person.Title, person.Company)
+									} else {
+										subtitle = person.Title
+									}
+									label := material.Caption(receiver.theme, subtitle)
+									label.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
+									return label.Layout(gtx)
+								}),
+							)
 						}),
 					)
 				})
