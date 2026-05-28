@@ -11,6 +11,7 @@ type App struct {
 
 	page           Page
 	chatFrom       Page
+	resumeFrom     Page
 	selectedPerson int
 	selectedGroup  int
 	selectedResume int

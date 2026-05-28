@@ -170,7 +170,7 @@ func dummyMe() Person {
 					Name:    "Charles Iliya Krempeaux",
 					Label:   "Software Engineer",
 					Email:   "charles@example.com",
-					URL:     "https://changelog.ca",
+					URL:     "http://reiver.link",
 					Summary: "Software engineer passionate about the Fediverse, decentralized systems, and building tools for the Social Web.",
 					Location: ResumeLocation{
 						City:        "Vancouver",

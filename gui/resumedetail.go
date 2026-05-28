@@ -15,18 +15,30 @@ var resumeLabelColor color.NRGBA = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xF
 
 func (receiver *App) layoutResumeDetail(gtx layout.Context) layout.Dimensions {
 	if receiver.backClick.Clicked(gtx) {
-		receiver.page = PagePersonDetail
+		if receiver.resumeFrom == PageProfile {
+			receiver.page = PageProfile
+		} else {
+			receiver.page = PagePersonDetail
+		}
 	}
 
-	if receiver.selectedPerson < 0 || receiver.selectedPerson >= len(receiver.people) {
-		receiver.page = PageHome
-		return layout.Dimensions{}
+	var person Person
+	if receiver.resumeFrom == PageProfile {
+		person = receiver.me
+	} else {
+		if receiver.selectedPerson < 0 || receiver.selectedPerson >= len(receiver.people) {
+			receiver.page = PageHome
+			return layout.Dimensions{}
+		}
+		person = receiver.people[receiver.selectedPerson]
 	}
-
-	var person Person = receiver.people[receiver.selectedPerson]
 
 	if receiver.selectedResume < 0 || receiver.selectedResume >= len(person.Resumes) {
-		receiver.page = PagePersonDetail
+		if receiver.resumeFrom == PageProfile {
+			receiver.page = PageProfile
+		} else {
+			receiver.page = PagePersonDetail
+		}
 		return layout.Dimensions{}
 	}
 

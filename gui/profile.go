@@ -89,7 +89,7 @@ func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
 	if 0 < len(me.Resumes) {
 		widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
 			return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return receiver.layoutResumesSection(gtx, me.Resumes)
+				return receiver.layoutResumesSection(gtx, me.Resumes, PageProfile)
 			})
 		})
 	}

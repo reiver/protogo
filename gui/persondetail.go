@@ -93,7 +93,7 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 						return layoutDetailSection(gtx, receiver.theme, "Notes", person.Note)
 					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return receiver.layoutResumesSection(gtx, person.Resumes)
+						return receiver.layoutResumesSection(gtx, person.Resumes, PagePersonDetail)
 					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -140,7 +140,7 @@ func layoutDetailSection(gtx layout.Context, th *material.Theme, label string, v
 	})
 }
 
-func (receiver *App) layoutResumesSection(gtx layout.Context, resumes []Resume) layout.Dimensions {
+func (receiver *App) layoutResumesSection(gtx layout.Context, resumes []Resume, fromPage Page) layout.Dimensions {
 	var th *material.Theme = receiver.theme
 
 	// Ensure we have enough clickables for the resumes.
@@ -152,6 +152,7 @@ func (receiver *App) layoutResumesSection(gtx layout.Context, resumes []Resume) 
 	for i := range resumes {
 		if receiver.resumeClicks[i].Clicked(gtx) {
 			receiver.selectedResume = i
+			receiver.resumeFrom = fromPage
 			receiver.page = PageResumeDetail
 		}
 	}
