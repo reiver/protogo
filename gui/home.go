@@ -27,6 +27,7 @@ func (receiver *App) layoutHome(gtx layout.Context) layout.Dimensions {
 	for i := range receiver.personClicks {
 		if receiver.personClicks[i].Clicked(gtx) {
 			receiver.selectedPerson = i
+			receiver.personFrom = PageHome
 			receiver.page = PagePersonDetail
 		}
 	}

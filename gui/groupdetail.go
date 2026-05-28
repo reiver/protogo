@@ -6,6 +6,7 @@ import (
 
 	"gioui.org/layout"
 	"gioui.org/unit"
+	"gioui.org/widget"
 	"gioui.org/widget/material"
 
 	"golang.org/x/exp/shiny/materialdesign/icons"
@@ -81,23 +82,52 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 	)
 }
 
+func (receiver *App) findPersonIndex(name string) int {
+	for i, person := range receiver.people {
+		if person.Name == name {
+			return i
+		}
+	}
+	return -1
+}
+
 func (receiver *App) layoutMembersList(gtx layout.Context, members []string) layout.Dimensions {
+	// Ensure we have enough clickables.
+	for len(receiver.memberClicks) < len(members) {
+		receiver.memberClicks = append(receiver.memberClicks, widget.Clickable{})
+	}
+
+	// Handle member clicks.
+	for i, member := range members {
+		if receiver.memberClicks[i].Clicked(gtx) {
+			var personIndex int = receiver.findPersonIndex(member)
+			if 0 <= personIndex {
+				receiver.selectedPerson = personIndex
+				receiver.personFrom = PageGroupDetail
+				receiver.page = PagePersonDetail
+			}
+		}
+	}
+
 	var children []layout.FlexChild
 
 	for i := range members {
-		var member string = members[i]
+		var memberIndex int = i
+		var member string = members[memberIndex]
 		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
-					return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							return layoutAvatar(gtx, receiver.theme, member, unit.Dp(36))
-						}),
-						layout.Rigid(layout.Spacer{Width: unit.Dp(10)}.Layout),
-						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-							return material.Body1(receiver.theme, member).Layout(gtx)
-						}),
-					)
+			return material.Clickable(gtx, &receiver.memberClicks[memberIndex], func(gtx layout.Context) layout.Dimensions {
+				return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
+						return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								return layoutAvatar(gtx, receiver.theme, member, unit.Dp(36))
+							}),
+							layout.Rigid(layout.Spacer{Width: unit.Dp(10)}.Layout),
+							layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+								return material.Body1(receiver.theme, member).Layout(gtx)
+							}),
+						)
+					})
 				})
 			})
 		}))

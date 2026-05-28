@@ -17,7 +17,11 @@ import (
 
 func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 	if receiver.backClick.Clicked(gtx) {
-		receiver.page = PageHome
+		if receiver.personFrom == PageGroupDetail {
+			receiver.page = PageGroupDetail
+		} else {
+			receiver.page = PageHome
+		}
 	}
 
 	if receiver.chatClick.Clicked(gtx) {

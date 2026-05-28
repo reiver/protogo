@@ -12,6 +12,7 @@ type App struct {
 	page           Page
 	chatFrom       Page
 	resumeFrom     Page
+	personFrom     Page
 	selectedPerson int
 	selectedGroup  int
 	selectedResume int
@@ -24,6 +25,7 @@ type App struct {
 	groupClicks    []widget.Clickable
 	personFavClicks []widget.Clickable
 	groupFavClicks  []widget.Clickable
+	memberClicks   []widget.Clickable
 	resumeClicks   []widget.Clickable
 	backClick      widget.Clickable
 	chatClick      widget.Clickable
