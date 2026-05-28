@@ -10,6 +10,7 @@ type App struct {
 	theme *material.Theme
 
 	page           Page
+	chatFrom       Page
 	selectedPerson int
 	selectedGroup  int
 	selectedResume int
@@ -27,10 +28,14 @@ type App struct {
 	groupChatClick widget.Clickable
 	favClick       widget.Clickable
 	sendClick      widget.Clickable
+	navContactsClick widget.Clickable
+	navChatsClick    widget.Clickable
+	chatItemClicks   []widget.Clickable
 	chatEditor   widget.Editor
 	searchEditor widget.Editor
 
 	homeList   layout.List
+	chatsList  layout.List
 	resumeList layout.List
 	chatList   layout.List
 }
@@ -55,6 +60,9 @@ func newApp() *App {
 		homeList: layout.List{
 			Axis: layout.Vertical,
 		},
+		chatsList: layout.List{
+			Axis: layout.Vertical,
+		},
 		resumeList: layout.List{
 			Axis: layout.Vertical,
 		},
@@ -71,6 +79,8 @@ func newApp() *App {
 
 func (receiver *App) Layout(gtx layout.Context) layout.Dimensions {
 	switch receiver.page {
+	case PageChats:
+		return receiver.layoutChatsPage(gtx)
 	case PagePersonDetail:
 		return receiver.layoutPersonDetail(gtx)
 	case PageGroupDetail:

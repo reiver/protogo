@@ -14,6 +14,7 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 	}
 
 	if receiver.groupChatClick.Clicked(gtx) {
+		receiver.chatFrom = PageGroupDetail
 		receiver.page = PageGroupChat
 	}
 

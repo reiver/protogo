@@ -21,7 +21,11 @@ var chatTimestampColor color.NRGBA = color.NRGBA{R: 0x99, G: 0x99, B: 0x99, A: 0
 
 func (receiver *App) layoutChat(gtx layout.Context) layout.Dimensions {
 	if receiver.backClick.Clicked(gtx) {
-		receiver.page = PagePersonDetail
+		if receiver.chatFrom == PageChats {
+			receiver.page = PageChats
+		} else {
+			receiver.page = PagePersonDetail
+		}
 	}
 
 	if receiver.selectedPerson < 0 || receiver.selectedPerson >= len(receiver.people) {
@@ -166,7 +170,11 @@ func layoutChatBubble(gtx layout.Context, th *material.Theme, msg ChatMessage, s
 
 func (receiver *App) layoutGroupChat(gtx layout.Context) layout.Dimensions {
 	if receiver.backClick.Clicked(gtx) {
-		receiver.page = PageGroupDetail
+		if receiver.chatFrom == PageChats {
+			receiver.page = PageChats
+		} else {
+			receiver.page = PageGroupDetail
+		}
 	}
 
 	if receiver.selectedGroup < 0 || receiver.selectedGroup >= len(receiver.groups) {

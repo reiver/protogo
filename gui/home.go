@@ -134,6 +134,9 @@ func (receiver *App) layoutHome(gtx layout.Context) layout.Dimensions {
 				}
 			})
 		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutBottomNav(gtx)
+		}),
 	)
 }
 
