@@ -36,73 +36,44 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 			return receiver.layoutTopBar(gtx, person.Name, true)
 		}),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return layout.Inset{Bottom: unit.Dp(12)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-							return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
-								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-									return layoutAvatar(gtx, receiver.theme, person.Name, unit.Dp(64))
-								}),
-								layout.Rigid(layout.Spacer{Width: unit.Dp(16)}.Layout),
-								layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-									return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											return material.H6(receiver.theme, person.Name).Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											var subtitle string
-											if "" != person.Company {
-												subtitle = fmt.Sprintf("%s — %s", person.Title, person.Company)
-											} else {
-												subtitle = person.Title
-											}
-											lbl := material.Body2(receiver.theme, subtitle)
-											lbl.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
-											return lbl.Layout(gtx)
-										}),
-										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-											if "" == person.FediID {
-												return layout.Dimensions{}
-											}
-											lbl := material.Caption(receiver.theme, person.FediID)
-											lbl.Color = color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF}
-											return lbl.Layout(gtx)
-										}),
-									)
-								}),
-							)
-						})
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return receiver.layoutFavoriteButton(gtx, person.Favorite)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return layoutDetailSection(gtx, receiver.theme, "Title", person.Title)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						if "" == person.Company {
-							return layout.Dimensions{}
-						}
-						return layoutDetailSection(gtx, receiver.theme, "Company", person.Company)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						if "" == person.Note {
-							return layout.Dimensions{}
-						}
-						return layoutDetailSection(gtx, receiver.theme, "Notes", person.Note)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return receiver.layoutResumesSection(gtx, person.Resumes, PagePersonDetail)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-							btn := material.Button(receiver.theme, &receiver.chatClick, "Chat")
-							return btn.Layout(gtx)
-						})
-					}),
-				)
-			})
+			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return layoutProfileHeader(gtx, receiver.theme, person.Name, person.Title, person.Company, person.FediID)
+				}),
+				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+					return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								return receiver.layoutFavoriteButton(gtx, person.Favorite)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								return layoutDetailSection(gtx, receiver.theme, "Title", person.Title)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								if "" == person.Company {
+									return layout.Dimensions{}
+								}
+								return layoutDetailSection(gtx, receiver.theme, "Company", person.Company)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								if "" == person.Note {
+									return layout.Dimensions{}
+								}
+								return layoutDetailSection(gtx, receiver.theme, "Notes", person.Note)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								return receiver.layoutResumesSection(gtx, person.Resumes, PagePersonDetail)
+							}),
+							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+									btn := material.Button(receiver.theme, &receiver.chatClick, "Chat")
+									return btn.Layout(gtx)
+								})
+							}),
+						)
+					})
+				}),
+			)
 		}),
 	)
 }
