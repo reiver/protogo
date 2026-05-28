@@ -212,6 +212,10 @@ func (receiver *App) layoutGroupItem(gtx layout.Context, index int) layout.Dimen
 			func(gtx layout.Context) layout.Dimensions {
 				return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
 					return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return layoutAvatar(gtx, receiver.theme, group.Name, unit.Dp(40))
+						}),
+						layout.Rigid(layout.Spacer{Width: unit.Dp(12)}.Layout),
 						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 							return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 								layout.Rigid(func(gtx layout.Context) layout.Dimensions {
