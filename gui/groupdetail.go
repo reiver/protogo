@@ -29,31 +29,42 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 
 	var group Group = receiver.groups[receiver.selectedGroup]
 
+	var widgets []layout.Widget
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Top: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutFavoriteButton(gtx, group.Favorite)
+		})
+	})
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			lbl := material.Caption(receiver.theme, "Members")
+			lbl.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
+			return lbl.Layout(gtx)
+		})
+	})
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutMembersList(gtx, group.Members)
+		})
+	})
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Top: unit.Dp(8), Bottom: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			btn := material.Button(receiver.theme, &receiver.groupChatClick, "Group Chat")
+			return btn.Layout(gtx)
+		})
+	})
+
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return receiver.layoutTopBar(gtx, group.Name, true)
 		}),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return receiver.layoutFavoriteButton(gtx, group.Favorite)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						lbl := material.Caption(receiver.theme, "Members")
-						lbl.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
-						return lbl.Layout(gtx)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return receiver.layoutMembersList(gtx, group.Members)
-					}),
-					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-						return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-							btn := material.Button(receiver.theme, &receiver.groupChatClick, "Group Chat")
-							return btn.Layout(gtx)
-						})
-					}),
-				)
+			return receiver.groupList.Layout(gtx, len(widgets), func(gtx layout.Context, index int) layout.Dimensions {
+				return widgets[index](gtx)
 			})
 		}),
 	)

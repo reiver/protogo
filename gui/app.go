@@ -37,11 +37,13 @@ type App struct {
 	chatEditor   widget.Editor
 	searchEditor widget.Editor
 
-	homeList    layout.List
-	chatsList   layout.List
-	profileList layout.List
-	resumeList  layout.List
-	chatList    layout.List
+	homeList       layout.List
+	chatsList      layout.List
+	profileList    layout.List
+	personList     layout.List
+	groupList      layout.List
+	resumeList     layout.List
+	chatList       layout.List
 }
 
 func newApp() *App {
@@ -66,6 +68,12 @@ func newApp() *App {
 			Axis: layout.Vertical,
 		},
 		profileList: layout.List{
+			Axis: layout.Vertical,
+		},
+		personList: layout.List{
+			Axis: layout.Vertical,
+		},
+		groupList: layout.List{
 			Axis: layout.Vertical,
 		},
 		chatsList: layout.List{

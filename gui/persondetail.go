@@ -36,45 +36,56 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 
 	var person Person = receiver.people[receiver.selectedPerson]
 
+	var widgets []layout.Widget
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layoutProfileHeader(gtx, receiver.theme, person.Name, person.Title, person.Company, person.FediID, func(gtx layout.Context) layout.Dimensions {
+			return layoutIconButton(gtx, &receiver.chatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
+		})
+	})
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutFavoriteButton(gtx, person.Favorite)
+		})
+	})
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return layoutDetailSection(gtx, receiver.theme, "Title", person.Title)
+		})
+	})
+
+	if "" != person.Company {
+		widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+			return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layoutDetailSection(gtx, receiver.theme, "Company", person.Company)
+			})
+		})
+	}
+
+	if "" != person.Note {
+		widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+			return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layoutDetailSection(gtx, receiver.theme, "Notes", person.Note)
+			})
+		})
+	}
+
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutResumesSection(gtx, person.Resumes, PagePersonDetail)
+		})
+	})
+
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return receiver.layoutTopBar(gtx, person.Name, true)
 		}),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layoutProfileHeader(gtx, receiver.theme, person.Name, person.Title, person.Company, person.FediID, func(gtx layout.Context) layout.Dimensions {
-						return layoutIconButton(gtx, &receiver.chatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
-					})
-				}),
-				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-					return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-						return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								return receiver.layoutFavoriteButton(gtx, person.Favorite)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								return layoutDetailSection(gtx, receiver.theme, "Title", person.Title)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								if "" == person.Company {
-									return layout.Dimensions{}
-								}
-								return layoutDetailSection(gtx, receiver.theme, "Company", person.Company)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								if "" == person.Note {
-									return layout.Dimensions{}
-								}
-								return layoutDetailSection(gtx, receiver.theme, "Notes", person.Note)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								return receiver.layoutResumesSection(gtx, person.Resumes, PagePersonDetail)
-							}),
-						)
-					})
-				}),
-			)
+			return receiver.personList.Layout(gtx, len(widgets), func(gtx layout.Context, index int) layout.Dimensions {
+				return widgets[index](gtx)
+			})
 		}),
 	)
 }
