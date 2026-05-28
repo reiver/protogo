@@ -43,7 +43,9 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-					return layoutProfileHeader(gtx, receiver.theme, person.Name, person.Title, person.Company, person.FediID)
+					return layoutProfileHeader(gtx, receiver.theme, person.Name, person.Title, person.Company, person.FediID, func(gtx layout.Context) layout.Dimensions {
+						return layoutIconButton(gtx, &receiver.chatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
+					})
 				}),
 				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 					return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -68,11 +70,6 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 							}),
 							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 								return receiver.layoutResumesSection(gtx, person.Resumes, PagePersonDetail)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-									return layoutIconButton(gtx, &receiver.chatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
-								})
 							}),
 						)
 					})

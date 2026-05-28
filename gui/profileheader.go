@@ -12,7 +12,7 @@ import (
 	"gioui.org/widget/material"
 )
 
-func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, title string, company string, fediID string) layout.Dimensions {
+func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, title string, company string, fediID string, actionButton layout.Widget) layout.Dimensions {
 	var bannerHeight unit.Dp = unit.Dp(120)
 	var avatarSize unit.Dp = unit.Dp(72)
 	var avatarOverlap unit.Dp = unit.Dp(36)
@@ -28,9 +28,9 @@ func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, ti
 	}
 
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-		// Banner + overlapping avatar.
+		// Banner + overlapping avatar + action button.
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Stack{Alignment: layout.SW}.Layout(gtx,
+			return layout.Stack{}.Layout(gtx,
 				// Banner background.
 				layout.Expanded(func(gtx layout.Context) layout.Dimensions {
 					var bannerPx int = gtx.Dp(bannerHeight)
@@ -52,9 +52,13 @@ func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, ti
 
 					return layout.Dimensions{Size: image.Point{X: gtx.Constraints.Max.X, Y: totalHeight}}
 				}),
-				// Avatar overlapping the bottom of the banner.
+				// Avatar overlapping the bottom of the banner (bottom-left).
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-					return layout.Inset{Left: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					var bannerPx int = gtx.Dp(bannerHeight)
+					var avatarTotalPx int = gtx.Dp(avatarSize + unit.Dp(6))
+					var topOffset unit.Dp = unit.Dp(float32(bannerPx-avatarTotalPx/2) / float32(gtx.Metric.PxPerDp))
+
+					return layout.Inset{Top: topOffset, Left: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 						// White ring behind avatar.
 						var ringSize unit.Dp = avatarSize + unit.Dp(6)
 						var ringSizePx int = gtx.Dp(ringSize)
@@ -70,6 +74,19 @@ func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, ti
 								return layoutAvatar(gtx, th, name, avatarSize)
 							}),
 						)
+					})
+				}),
+				// Action button (bottom-right, below banner).
+				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+					if nil == actionButton {
+						return layout.Dimensions{}
+					}
+					var bannerPx int = gtx.Dp(bannerHeight)
+					var buttonOffset unit.Dp = unit.Dp(float32(bannerPx+gtx.Dp(unit.Dp(4))) / float32(gtx.Metric.PxPerDp))
+
+					return layout.Inset{Top: buttonOffset, Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						gtx.Constraints.Min.X = gtx.Constraints.Max.X
+						return layout.E.Layout(gtx, actionButton)
 					})
 				}),
 			)

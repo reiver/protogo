@@ -14,7 +14,7 @@ func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
 
 	// Profile header with banner + avatar.
 	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
-		return layoutProfileHeader(gtx, receiver.theme, me.Name, me.Title, me.Company, me.FediID)
+		return layoutProfileHeader(gtx, receiver.theme, me.Name, me.Title, me.Company, me.FediID, nil)
 	})
 
 	// Detail sections.
