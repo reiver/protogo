@@ -8,4 +8,5 @@ const (
 	PageGroupDetail
 	PageResumeDetail
 	PageChat
+	PageGroupChat
 )

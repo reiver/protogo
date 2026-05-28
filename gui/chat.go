@@ -62,7 +62,7 @@ func (receiver *App) layoutChat(gtx layout.Context) layout.Dimensions {
 		}),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 			return receiver.chatList.Layout(gtx, messageCount, func(gtx layout.Context, index int) layout.Dimensions {
-				return layoutChatBubble(gtx, receiver.theme, person.Messages[index])
+				return layoutChatBubble(gtx, receiver.theme, person.Messages[index], false)
 			})
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -91,7 +91,7 @@ func (receiver *App) sendMessage(person *Person) {
 	receiver.chatList.Position.First = len(person.Messages)
 }
 
-func layoutChatBubble(gtx layout.Context, th *material.Theme, msg ChatMessage) layout.Dimensions {
+func layoutChatBubble(gtx layout.Context, th *material.Theme, msg ChatMessage, showSender bool) layout.Dimensions {
 	var bubbleColor color.NRGBA
 	var textColor color.NRGBA
 	var alignment layout.Direction
@@ -127,28 +127,113 @@ func layoutChatBubble(gtx layout.Context, th *material.Theme, msg ChatMessage) l
 				}),
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
 					return layout.UniformInset(unit.Dp(10)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-						return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								lbl := material.Body2(th, msg.Text)
-								lbl.Color = textColor
+						var items []layout.FlexChild
+
+						// Show sender name for group chats.
+						if showSender && !msg.FromMe && "" != msg.Sender {
+							items = append(items, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								lbl := material.Caption(th, msg.Sender)
+								lbl.Color = color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF}
+								lbl.Font.Weight = 700
 								return lbl.Layout(gtx)
-							}),
-							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-								return layout.Inset{Top: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-									lbl := material.Caption(th, msg.Timestamp)
-									lbl.Color = chatTimestampColor
-									if msg.FromMe {
-										lbl.Color = color.NRGBA{R: 0xBB, G: 0xBB, B: 0xDD, A: 0xFF}
-									}
-									return lbl.Layout(gtx)
-								})
-							}),
-						)
+							}))
+						}
+
+						items = append(items, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							lbl := material.Body2(th, msg.Text)
+							lbl.Color = textColor
+							return lbl.Layout(gtx)
+						}))
+
+						items = append(items, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return layout.Inset{Top: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+								lbl := material.Caption(th, msg.Timestamp)
+								lbl.Color = chatTimestampColor
+								if msg.FromMe {
+									lbl.Color = color.NRGBA{R: 0xBB, G: 0xBB, B: 0xDD, A: 0xFF}
+								}
+								return lbl.Layout(gtx)
+							})
+						}))
+
+						return layout.Flex{Axis: layout.Vertical}.Layout(gtx, items...)
 					})
 				}),
 			)
 		})
 	})
+}
+
+func (receiver *App) layoutGroupChat(gtx layout.Context) layout.Dimensions {
+	if receiver.backClick.Clicked(gtx) {
+		receiver.page = PageGroupDetail
+	}
+
+	if receiver.selectedGroup < 0 || receiver.selectedGroup >= len(receiver.groups) {
+		receiver.page = PageHome
+		return layout.Dimensions{}
+	}
+
+	var group *Group = &receiver.groups[receiver.selectedGroup]
+
+	// Handle send.
+	if receiver.sendClick.Clicked(gtx) {
+		receiver.sendGroupMessage(group)
+	}
+
+	// Handle enter key in editor.
+	for {
+		event, ok := receiver.chatEditor.Update(gtx)
+		if !ok {
+			break
+		}
+		if _, ok := event.(widget.SubmitEvent); ok {
+			receiver.sendGroupMessage(group)
+		}
+	}
+
+	var messageCount int = len(group.Messages)
+
+	// Scroll to bottom on first render.
+	if receiver.chatList.Position.Count == 0 && messageCount > 0 {
+		receiver.chatList.Position.BeforeEnd = false
+		receiver.chatList.Position.Offset = 0
+		receiver.chatList.Position.First = messageCount
+	}
+
+	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutTopBar(gtx, group.Name, true)
+		}),
+		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+			return receiver.chatList.Layout(gtx, messageCount, func(gtx layout.Context, index int) layout.Dimensions {
+				return layoutChatBubble(gtx, receiver.theme, group.Messages[index], true)
+			})
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutChatInput(gtx)
+		}),
+	)
+}
+
+func (receiver *App) sendGroupMessage(group *Group) {
+	var text string = receiver.chatEditor.Text()
+	if "" == text {
+		return
+	}
+
+	group.Messages = append(group.Messages, ChatMessage{
+		FromMe:    true,
+		Text:      text,
+		Timestamp: time.Now().Format("2006-01-02 15:04"),
+	})
+
+	receiver.chatEditor.SetText("")
+
+	// Scroll to bottom.
+	receiver.chatList.Position.BeforeEnd = false
+	receiver.chatList.Position.Offset = 0
+	receiver.chatList.Position.First = len(group.Messages)
 }
 
 func (receiver *App) layoutChatInput(gtx layout.Context) layout.Dimensions {

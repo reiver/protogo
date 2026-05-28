@@ -11,6 +11,7 @@ type Person struct {
 
 type ChatMessage struct {
 	FromMe    bool
+	Sender    string
 	Text      string
 	Timestamp string
 }
@@ -148,8 +149,9 @@ type ResumeProject struct {
 }
 
 type Group struct {
-	Name    string
-	Members []string
+	Name     string
+	Members  []string
+	Messages []ChatMessage
 }
 
 func dummyPeople() []Person {
@@ -403,10 +405,22 @@ func dummyGroups() []Group {
 		{
 			Name:    "Meshwork Labs + FediCorp",
 			Members: []string{"Alice Zhang", "Bob Okafor", "Fatima Al-Rashid"},
+			Messages: []ChatMessage{
+				{Sender: "Alice Zhang", Text: "Hey everyone, should we sync on the federation API this week?", Timestamp: "2025-12-10 09:00"},
+				{Sender: "Bob Okafor", Text: "Works for me. Thursday afternoon?", Timestamp: "2025-12-10 09:15"},
+				{Sender: "Fatima Al-Rashid", Text: "Thursday is good. I can share the developer onboarding doc beforehand.", Timestamp: "2025-12-10 09:22"},
+				{FromMe: true, Text: "Thursday works. Looking forward to it.", Timestamp: "2025-12-10 09:30"},
+				{Sender: "Alice Zhang", Text: "Great, I'll send a calendar invite.", Timestamp: "2025-12-10 09:35"},
+			},
 		},
 		{
 			Name:    "Vancouver Tech Meetup",
 			Members: []string{"Carol Reyes", "David Park"},
+			Messages: []ChatMessage{
+				{Sender: "David Park", Text: "Anyone going to the meetup next Tuesday?", Timestamp: "2025-12-05 18:00"},
+				{Sender: "Carol Reyes", Text: "I'll be there! Hoping to see the talk on Wasm.", Timestamp: "2025-12-05 18:10"},
+				{FromMe: true, Text: "Count me in.", Timestamp: "2025-12-05 18:15"},
+			},
 		},
 	}
 }

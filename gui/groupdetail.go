@@ -13,6 +13,10 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 		receiver.page = PageHome
 	}
 
+	if receiver.groupChatClick.Clicked(gtx) {
+		receiver.page = PageGroupChat
+	}
+
 	if receiver.selectedGroup < 0 || receiver.selectedGroup >= len(receiver.groups) {
 		receiver.page = PageHome
 		return layout.Dimensions{}
@@ -34,6 +38,12 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						return receiver.layoutMembersList(gtx, group.Members)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							btn := material.Button(receiver.theme, &receiver.groupChatClick, "Group Chat")
+							return btn.Layout(gtx)
+						})
 					}),
 				)
 			})

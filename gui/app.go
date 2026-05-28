@@ -21,8 +21,9 @@ type App struct {
 	groupClicks  []widget.Clickable
 	resumeClicks []widget.Clickable
 	backClick    widget.Clickable
-	chatClick    widget.Clickable
-	sendClick    widget.Clickable
+	chatClick      widget.Clickable
+	groupChatClick widget.Clickable
+	sendClick      widget.Clickable
 	chatEditor   widget.Editor
 	searchEditor widget.Editor
 
@@ -73,6 +74,8 @@ func (receiver *App) Layout(gtx layout.Context) layout.Dimensions {
 		return receiver.layoutResumeDetail(gtx)
 	case PageChat:
 		return receiver.layoutChat(gtx)
+	case PageGroupChat:
+		return receiver.layoutGroupChat(gtx)
 	default:
 		return receiver.layoutHome(gtx)
 	}
