@@ -12,7 +12,7 @@ import (
 	"gioui.org/widget/material"
 )
 
-func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, title string, company string, fediID string, actionButton layout.Widget) layout.Dimensions {
+func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, title string, company string, fediID string, actionButtons ...layout.Widget) layout.Dimensions {
 	var bannerHeight unit.Dp = unit.Dp(120)
 	var avatarSize unit.Dp = unit.Dp(72)
 	var avatarOverlap unit.Dp = unit.Dp(36)
@@ -78,7 +78,7 @@ func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, ti
 				}),
 				// Action button (bottom-right, below banner).
 				layout.Stacked(func(gtx layout.Context) layout.Dimensions {
-					if nil == actionButton {
+					if 0 == len(actionButtons) {
 						return layout.Dimensions{}
 					}
 					var bannerPx int = gtx.Dp(bannerHeight)
@@ -86,7 +86,18 @@ func layoutProfileHeader(gtx layout.Context, th *material.Theme, name string, ti
 
 					return layout.Inset{Top: buttonOffset, Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 						gtx.Constraints.Min.X = gtx.Constraints.Max.X
-						return layout.E.Layout(gtx, actionButton)
+
+						var children []layout.FlexChild
+						for _, btn := range actionButtons {
+							var b layout.Widget = btn
+							children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+								return layout.Inset{Left: unit.Dp(8)}.Layout(gtx, b)
+							}))
+						}
+
+						return layout.E.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+							return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx, children...)
+						})
 					})
 				}),
 			)

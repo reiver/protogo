@@ -39,15 +39,23 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 	var widgets []layout.Widget
 
 	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
-		return layoutProfileHeader(gtx, receiver.theme, person.Name, person.Title, person.Company, person.FediID, func(gtx layout.Context) layout.Dimensions {
-			return layoutIconButton(gtx, &receiver.chatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
-		})
-	})
-
-	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
-		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			return receiver.layoutFavoriteButton(gtx, person.Favorite)
-		})
+		var favIconData []byte
+		var favColor color.NRGBA
+		if person.Favorite {
+			favIconData = icons.ToggleStar
+			favColor = color.NRGBA{R: 0xFF, G: 0xB3, B: 0x00, A: 0xFF} // amber
+		} else {
+			favIconData = icons.ToggleStarBorder
+			favColor = color.NRGBA{R: 0x99, G: 0x99, B: 0x99, A: 0xFF} // gray
+		}
+		return layoutProfileHeader(gtx, receiver.theme, person.Name, person.Title, person.Company, person.FediID,
+			func(gtx layout.Context) layout.Dimensions {
+				return layoutIconButton(gtx, &receiver.favClick, favIconData, favColor)
+			},
+			func(gtx layout.Context) layout.Dimensions {
+				return layoutIconButton(gtx, &receiver.chatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
+			},
+		)
 	})
 
 	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
