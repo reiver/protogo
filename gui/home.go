@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"strings"
 
 	"gioui.org/layout"
 	"gioui.org/op/clip"
@@ -13,6 +14,11 @@ import (
 
 	"protogo/cfg"
 )
+
+type filteredItem struct {
+	kind  int // 0 = people header, 1 = person, 2 = groups header, 3 = group
+	index int // index into receiver.people or receiver.groups
+}
 
 func (receiver *App) layoutHome(gtx layout.Context) layout.Dimensions {
 
@@ -32,36 +38,70 @@ func (receiver *App) layoutHome(gtx layout.Context) layout.Dimensions {
 		}
 	}
 
-	var totalItems int = len(receiver.people) + 1 + len(receiver.groups) + 1 // +1 for each section header
+	// Build filtered items based on search query.
+	var query string = strings.ToLower(strings.TrimSpace(receiver.searchEditor.Text()))
+
+	var items []filteredItem
+
+	// Filter people.
+	var filteredPeople bool
+	for i, person := range receiver.people {
+		if "" == query || strings.Contains(strings.ToLower(person.Name), query) || strings.Contains(strings.ToLower(person.Title), query) || strings.Contains(strings.ToLower(person.Company), query) {
+			if !filteredPeople {
+				items = append(items, filteredItem{kind: 0})
+				filteredPeople = true
+			}
+			items = append(items, filteredItem{kind: 1, index: i})
+		}
+	}
+
+	// Filter groups.
+	var filteredGroups bool
+	for i, group := range receiver.groups {
+		if "" == query || strings.Contains(strings.ToLower(group.Name), query) {
+			if !filteredGroups {
+				items = append(items, filteredItem{kind: 2})
+				filteredGroups = true
+			}
+			items = append(items, filteredItem{kind: 3, index: i})
+		}
+	}
 
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return receiver.layoutTopBar(gtx, cfg.Name, false)
 		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return receiver.layoutSearchBar(gtx)
+		}),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
-			return receiver.homeList.Layout(gtx, totalItems, func(gtx layout.Context, index int) layout.Dimensions {
+			return receiver.homeList.Layout(gtx, len(items), func(gtx layout.Context, index int) layout.Dimensions {
+				var item filteredItem = items[index]
 
-				var peopleHeaderIndex int = 0
-				var peopleStartIndex int = 1
-				var peopleEndIndex int = len(receiver.people)
-				var groupsHeaderIndex int = peopleEndIndex + 1
-				var groupsStartIndex int = groupsHeaderIndex + 1
-
-				switch {
-				case index == peopleHeaderIndex:
+				switch item.kind {
+				case 0:
 					return layoutSectionHeader(gtx, receiver.theme, "People")
-				case index >= peopleStartIndex && index <= peopleEndIndex:
-					var personIndex int = index - peopleStartIndex
-					return receiver.layoutPersonItem(gtx, personIndex)
-				case index == groupsHeaderIndex:
+				case 1:
+					return receiver.layoutPersonItem(gtx, item.index)
+				case 2:
 					return layoutSectionHeader(gtx, receiver.theme, "Groups")
+				case 3:
+					return receiver.layoutGroupItem(gtx, item.index)
 				default:
-					var groupIndex int = index - groupsStartIndex
-					return receiver.layoutGroupItem(gtx, groupIndex)
+					return layout.Dimensions{}
 				}
 			})
 		}),
 	)
+}
+
+func (receiver *App) layoutSearchBar(gtx layout.Context) layout.Dimensions {
+	return layout.Inset{Top: unit.Dp(8), Bottom: unit.Dp(4), Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+		return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
+			editor := material.Editor(receiver.theme, &receiver.searchEditor, "Search people and groups...")
+			return editor.Layout(gtx)
+		})
+	})
 }
 
 func layoutSectionHeader(gtx layout.Context, th *material.Theme, title string) layout.Dimensions {

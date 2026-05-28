@@ -24,6 +24,7 @@ type App struct {
 	chatClick    widget.Clickable
 	sendClick    widget.Clickable
 	chatEditor   widget.Editor
+	searchEditor widget.Editor
 
 	homeList   layout.List
 	resumeList layout.List
