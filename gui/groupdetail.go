@@ -59,7 +59,15 @@ func (receiver *App) layoutMembersList(gtx layout.Context, members []string) lay
 		children = append(children, layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return layoutCard(gtx, func(gtx layout.Context) layout.Dimensions {
-					return material.Body1(receiver.theme, member).Layout(gtx)
+					return layout.Flex{Axis: layout.Horizontal, Alignment: layout.Middle}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							return layoutAvatar(gtx, receiver.theme, member, unit.Dp(36))
+						}),
+						layout.Rigid(layout.Spacer{Width: unit.Dp(10)}.Layout),
+						layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+							return material.Body1(receiver.theme, member).Layout(gtx)
+						}),
+					)
 				})
 			})
 		}))
