@@ -61,6 +61,14 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 											lbl.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
 											return lbl.Layout(gtx)
 										}),
+										layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+											if "" == person.FediID {
+												return layout.Dimensions{}
+											}
+											lbl := material.Caption(receiver.theme, person.FediID)
+											lbl.Color = color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF}
+											return lbl.Layout(gtx)
+										}),
 									)
 								}),
 							)
