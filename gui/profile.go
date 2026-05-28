@@ -2,11 +2,14 @@ package gui
 
 import (
 	"image/color"
+	"strings"
 
 	"gioui.org/layout"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+
+	"codeberg.org/reiver/go-fediverseid"
 
 	"protogo/cfg"
 )
@@ -19,9 +22,17 @@ func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
 			break
 		}
 		if _, ok := event.(widget.SubmitEvent); ok {
-			var newFediID string = receiver.fediIDEditor.Text()
-			receiver.me.FediID = newFediID
-			persistProfileFediID(newFediID)
+			var text string = strings.TrimSpace(receiver.fediIDEditor.Text())
+			if "" == text {
+				receiver.profileFediIDError = "Fediverse ID cannot be empty."
+			} else if _, err := fediverseid.ParseFediverseIDString(text); nil != err {
+				receiver.profileFediIDError = "Not a valid Fediverse ID. Expected format: @name@host"
+			} else {
+				receiver.profileFediIDError = ""
+				receiver.me.FediID = text
+				receiver.fediIDEditor.SetText(text)
+				persistProfileFediID(text)
+			}
 		}
 	}
 
@@ -63,6 +74,16 @@ func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
 					editor.Color = color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF}
 					editor.HintColor = color.NRGBA{R: 0x99, G: 0x99, B: 0x99, A: 0xFF}
 					return editor.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if "" == receiver.profileFediIDError {
+						return layout.Dimensions{}
+					}
+					return layout.Inset{Top: unit.Dp(4)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Caption(receiver.theme, receiver.profileFediIDError)
+						lbl.Color = color.NRGBA{R: 0xD3, G: 0x2F, B: 0x2F, A: 0xFF}
+						return lbl.Layout(gtx)
+					})
 				}),
 			)
 		})

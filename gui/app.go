@@ -41,6 +41,7 @@ type App struct {
 	chatItemClicks   []widget.Clickable
 	onboardingSaveClick widget.Clickable
 	onboardingError     string
+	profileFediIDError  string
 	chatEditor          widget.Editor
 	searchEditor        widget.Editor
 	fediIDEditor        widget.Editor
