@@ -2,12 +2,17 @@ package gui
 
 import (
 	"fmt"
+	"image"
 	"image/color"
 
 	"gioui.org/layout"
+	"gioui.org/op/clip"
+	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+
+	"golang.org/x/exp/shiny/materialdesign/icons"
 )
 
 func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
@@ -66,8 +71,7 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 							}),
 							layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 								return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-									btn := material.Button(receiver.theme, &receiver.chatClick, "Chat")
-									return btn.Layout(gtx)
+									return layoutIconButton(gtx, &receiver.chatClick, icons.CommunicationChat, color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF})
 								})
 							}),
 						)
@@ -93,6 +97,30 @@ func (receiver *App) layoutFavoriteButton(gtx layout.Context, favorited bool) la
 			btn.Background = color.NRGBA{R: 0x99, G: 0x99, B: 0x99, A: 0xFF} // gray
 		}
 		return btn.Layout(gtx)
+	})
+}
+
+func layoutIconButton(gtx layout.Context, click *widget.Clickable, iconData []byte, bg color.NRGBA) layout.Dimensions {
+	icon, _ := widget.NewIcon(iconData)
+
+	return material.Clickable(gtx, click, func(gtx layout.Context) layout.Dimensions {
+		var sizeDp unit.Dp = unit.Dp(48)
+		var sizePx int = gtx.Dp(sizeDp)
+
+		return layout.Stack{Alignment: layout.Center}.Layout(gtx,
+			layout.Expanded(func(gtx layout.Context) layout.Dimensions {
+				var sz image.Point = image.Point{X: sizePx, Y: sizePx}
+				defer clip.Ellipse{Max: sz}.Push(gtx.Ops).Pop()
+				paint.Fill(gtx.Ops, bg)
+				return layout.Dimensions{Size: sz}
+			}),
+			layout.Stacked(func(gtx layout.Context) layout.Dimensions {
+				var iconPx int = gtx.Dp(unit.Dp(24))
+				gtx.Constraints.Min = image.Point{X: iconPx, Y: iconPx}
+				gtx.Constraints.Max = image.Point{X: iconPx, Y: iconPx}
+				return icon.Layout(gtx, color.NRGBA{R: 0xFF, G: 0xFF, B: 0xFF, A: 0xFF})
+			}),
+		)
 	})
 }
 
