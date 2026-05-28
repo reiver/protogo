@@ -40,6 +40,7 @@ type App struct {
 	gigClicks        []widget.Clickable
 	chatItemClicks   []widget.Clickable
 	onboardingSaveClick widget.Clickable
+	onboardingError     string
 	chatEditor          widget.Editor
 	searchEditor        widget.Editor
 	fediIDEditor        widget.Editor

@@ -8,6 +8,8 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+
+	"codeberg.org/reiver/go-fediverseid"
 )
 
 func (receiver *App) layoutOnboarding(gtx layout.Context) layout.Dimensions {
@@ -67,6 +69,17 @@ func (receiver *App) layoutOnboarding(gtx layout.Context) layout.Dimensions {
 						return editor.Layout(gtx)
 					})
 				}),
+				// Error message.
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					if "" == receiver.onboardingError {
+						return layout.Dimensions{}
+					}
+					return layout.Inset{Top: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Caption(th, receiver.onboardingError)
+						lbl.Color = color.NRGBA{R: 0xD3, G: 0x2F, B: 0x2F, A: 0xFF}
+						return lbl.Layout(gtx)
+					})
+				}),
 				layout.Rigid(layout.Spacer{Height: unit.Dp(24)}.Layout),
 				// Continue button.
 				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -80,12 +93,21 @@ func (receiver *App) layoutOnboarding(gtx layout.Context) layout.Dimensions {
 }
 
 func (receiver *App) completeOnboarding() {
-	var fediID string = strings.TrimSpace(receiver.fediIDEditor.Text())
-	if "" == fediID {
+	var text string = strings.TrimSpace(receiver.fediIDEditor.Text())
+	if "" == text {
+		receiver.onboardingError = "Please enter your Fediverse ID."
 		return
 	}
 
-	receiver.me.FediID = fediID
-	persistProfileFediID(fediID)
+	_, err := fediverseid.ParseFediverseIDString(text)
+	if nil != err {
+		receiver.onboardingError = "Not a valid Fediverse ID. Expected format: @name@host"
+		return
+	}
+
+	receiver.onboardingError = ""
+	receiver.me.FediID = text
+	receiver.fediIDEditor.SetText(text)
+	persistProfileFediID(text)
 	receiver.page = PageHome
 }
