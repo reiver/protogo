@@ -81,11 +81,15 @@ func (receiver *App) sendMessage(person *Person) {
 		return
 	}
 
+	var now time.Time = time.Now()
+
 	person.Messages = append(person.Messages, ChatMessage{
 		FromMe:    true,
 		Text:      text,
-		Timestamp: time.Now().Format("2006-01-02 15:04"),
+		Timestamp: now.Format("2006-01-02 15:04"),
 	})
+
+	persistPersonMessage(*person, text, now)
 
 	receiver.chatEditor.SetText("")
 
@@ -230,11 +234,15 @@ func (receiver *App) sendGroupMessage(group *Group) {
 		return
 	}
 
+	var now time.Time = time.Now()
+
 	group.Messages = append(group.Messages, ChatMessage{
 		FromMe:    true,
 		Text:      text,
-		Timestamp: time.Now().Format("2006-01-02 15:04"),
+		Timestamp: now.Format("2006-01-02 15:04"),
 	})
+
+	persistGroupMessage(*group, text, now)
 
 	receiver.chatEditor.SetText("")
 

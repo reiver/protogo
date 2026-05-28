@@ -44,6 +44,7 @@ func (receiver *App) layoutHome(gtx layout.Context) layout.Dimensions {
 	for i := range receiver.personFavClicks {
 		if receiver.personFavClicks[i].Clicked(gtx) {
 			receiver.people[i].Favorite = !receiver.people[i].Favorite
+			persistPersonFavorite(receiver.people[i])
 		}
 	}
 
@@ -51,6 +52,7 @@ func (receiver *App) layoutHome(gtx layout.Context) layout.Dimensions {
 	for i := range receiver.groupFavClicks {
 		if receiver.groupFavClicks[i].Clicked(gtx) {
 			receiver.groups[i].Favorite = !receiver.groups[i].Favorite
+			persistGroupFavorite(receiver.groups[i])
 		}
 	}
 

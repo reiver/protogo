@@ -39,6 +39,7 @@ func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 
 	if receiver.favClick.Clicked(gtx) {
 		receiver.people[receiver.selectedPerson].Favorite = !receiver.people[receiver.selectedPerson].Favorite
+		persistPersonFavorite(receiver.people[receiver.selectedPerson])
 	}
 
 	var person Person = receiver.people[receiver.selectedPerson]

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"protogo/srv/db"
 	"protogo/srv/log"
 )
 
@@ -12,6 +13,12 @@ func main() {
 
 	log.Highlightf("ProToGo ⚡")
 	defer log.Highlightf("ProToGo 👻")
+
+	defer dbsrv.Close()
+
+	seeddb()
+
+	showandtell()
 
 	log.Informf("Here we go…")
 	gui()

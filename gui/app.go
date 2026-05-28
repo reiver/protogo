@@ -53,18 +53,18 @@ type App struct {
 }
 
 func newApp() *App {
-	var people []Person = dummyPeople()
-	var groups []Group = dummyGroups()
+	var people []Person = loadPeopleFromDB()
+	var groups []Group = loadGroupsFromDB()
 
 	return &App{
 		theme: material.NewTheme(),
 
 		page: PageHome,
 
-		me:     dummyMe(),
+		me:     loadMeFromDB(),
 		people: people,
 		groups: groups,
-		gigs:   dummyGigs(),
+		gigs:   loadGigsFromDB(),
 
 		personClicks:    make([]widget.Clickable, len(people)),
 		groupClicks:     make([]widget.Clickable, len(groups)),

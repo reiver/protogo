@@ -29,6 +29,7 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 
 	if receiver.favClick.Clicked(gtx) {
 		receiver.groups[receiver.selectedGroup].Favorite = !receiver.groups[receiver.selectedGroup].Favorite
+		persistGroupFavorite(receiver.groups[receiver.selectedGroup])
 	}
 
 	var group Group = receiver.groups[receiver.selectedGroup]
