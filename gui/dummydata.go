@@ -5,6 +5,7 @@ type Person struct {
 	Title    string
 	Company  string
 	Note     string
+	Favorite bool
 	Resumes  []Resume
 	Messages []ChatMessage
 }
@@ -151,16 +152,18 @@ type ResumeProject struct {
 type Group struct {
 	Name     string
 	Members  []string
+	Favorite bool
 	Messages []ChatMessage
 }
 
 func dummyPeople() []Person {
 	return []Person{
 		{
-			Name:    "Alice Zhang",
-			Title:   "Senior Backend Engineer",
-			Company: "Meshwork Labs",
-			Note:    "Met at GopherCon 2025. Interested in distributed systems and ActivityPub.",
+			Name:     "Alice Zhang",
+			Title:    "Senior Backend Engineer",
+			Company:  "Meshwork Labs",
+			Favorite: true,
+			Note:     "Met at GopherCon 2025. Interested in distributed systems and ActivityPub.",
 			Resumes: []Resume{
 				{
 					Label: "Software Engineer Resume",
@@ -317,10 +320,11 @@ func dummyPeople() []Person {
 			},
 		},
 		{
-			Name:    "David Park",
-			Title:   "CTO",
-			Company: "OpenRelay Inc.",
-			Note:    "Spoke on a panel about federation protocols. Very knowledgeable about Mastodon internals.",
+			Name:     "David Park",
+			Title:    "CTO",
+			Company:  "OpenRelay Inc.",
+			Favorite: true,
+			Note:     "Spoke on a panel about federation protocols. Very knowledgeable about Mastodon internals.",
 			Resumes: []Resume{
 				{
 					Label: "Executive Resume",
@@ -403,8 +407,9 @@ func dummyPeople() []Person {
 func dummyGroups() []Group {
 	return []Group{
 		{
-			Name:    "Meshwork Labs + FediCorp",
-			Members: []string{"Alice Zhang", "Bob Okafor", "Fatima Al-Rashid"},
+			Name:     "Meshwork Labs + FediCorp",
+			Members:  []string{"Alice Zhang", "Bob Okafor", "Fatima Al-Rashid"},
+			Favorite: true,
 			Messages: []ChatMessage{
 				{Sender: "Alice Zhang", Text: "Hey everyone, should we sync on the federation API this week?", Timestamp: "2025-12-10 09:00"},
 				{Sender: "Bob Okafor", Text: "Works for me. Thursday afternoon?", Timestamp: "2025-12-10 09:15"},

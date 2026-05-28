@@ -17,12 +17,15 @@ type App struct {
 	people []Person
 	groups []Group
 
-	personClicks []widget.Clickable
-	groupClicks  []widget.Clickable
-	resumeClicks []widget.Clickable
-	backClick    widget.Clickable
+	personClicks   []widget.Clickable
+	groupClicks    []widget.Clickable
+	personFavClicks []widget.Clickable
+	groupFavClicks  []widget.Clickable
+	resumeClicks   []widget.Clickable
+	backClick      widget.Clickable
 	chatClick      widget.Clickable
 	groupChatClick widget.Clickable
+	favClick       widget.Clickable
 	sendClick      widget.Clickable
 	chatEditor   widget.Editor
 	searchEditor widget.Editor
@@ -44,8 +47,10 @@ func newApp() *App {
 		people: people,
 		groups: groups,
 
-		personClicks: make([]widget.Clickable, len(people)),
-		groupClicks:  make([]widget.Clickable, len(groups)),
+		personClicks:    make([]widget.Clickable, len(people)),
+		groupClicks:     make([]widget.Clickable, len(groups)),
+		personFavClicks: make([]widget.Clickable, len(people)),
+		groupFavClicks:  make([]widget.Clickable, len(groups)),
 
 		homeList: layout.List{
 			Axis: layout.Vertical,

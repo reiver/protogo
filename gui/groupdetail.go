@@ -22,6 +22,10 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 		return layout.Dimensions{}
 	}
 
+	if receiver.favClick.Clicked(gtx) {
+		receiver.groups[receiver.selectedGroup].Favorite = !receiver.groups[receiver.selectedGroup].Favorite
+	}
+
 	var group Group = receiver.groups[receiver.selectedGroup]
 
 	return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
@@ -31,6 +35,9 @@ func (receiver *App) layoutGroupDetail(gtx layout.Context) layout.Dimensions {
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 			return layout.UniformInset(unit.Dp(16)).Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return receiver.layoutFavoriteButton(gtx, group.Favorite)
+					}),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						lbl := material.Caption(receiver.theme, "Members")
 						lbl.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
