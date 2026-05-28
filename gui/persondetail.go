@@ -17,9 +17,12 @@ import (
 
 func (receiver *App) layoutPersonDetail(gtx layout.Context) layout.Dimensions {
 	if receiver.backClick.Clicked(gtx) {
-		if receiver.personFrom == PageGroupDetail {
+		switch receiver.personFrom {
+		case PageGroupDetail:
 			receiver.page = PageGroupDetail
-		} else {
+		case PageGigs:
+			receiver.page = PageGigs
+		default:
 			receiver.page = PageHome
 		}
 	}

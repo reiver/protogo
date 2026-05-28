@@ -4,6 +4,7 @@ type Page int
 
 const (
 	PageProfile      Page = iota
+	PageGigs
 	PageHome
 	PageChats
 	PagePersonDetail

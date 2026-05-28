@@ -19,6 +19,11 @@ var navProfileIcon *widget.Icon = func() *widget.Icon {
 	return icon
 }()
 
+var navGigsIcon *widget.Icon = func() *widget.Icon {
+	icon, _ := widget.NewIcon(icons.ActionWork)
+	return icon
+}()
+
 var navContactsIcon *widget.Icon = func() *widget.Icon {
 	icon, _ := widget.NewIcon(icons.SocialPeople)
 	return icon
@@ -32,6 +37,9 @@ var navChatsIcon *widget.Icon = func() *widget.Icon {
 func (receiver *App) layoutBottomNav(gtx layout.Context) layout.Dimensions {
 	if receiver.navProfileClick.Clicked(gtx) {
 		receiver.page = PageProfile
+	}
+	if receiver.navGigsClick.Clicked(gtx) {
+		receiver.page = PageGigs
 	}
 	if receiver.navContactsClick.Clicked(gtx) {
 		receiver.page = PageHome
@@ -59,6 +67,9 @@ func (receiver *App) layoutBottomNav(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
 					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 						return layoutNavTab(gtx, receiver.theme, &receiver.navProfileClick, navProfileIcon, "Profile", receiver.page == PageProfile)
+					}),
+					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+						return layoutNavTab(gtx, receiver.theme, &receiver.navGigsClick, navGigsIcon, "Gigs", receiver.page == PageGigs)
 					}),
 					layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 						return layoutNavTab(gtx, receiver.theme, &receiver.navContactsClick, navContactsIcon, "Contacts", receiver.page == PageHome)

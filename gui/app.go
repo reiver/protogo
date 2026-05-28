@@ -20,6 +20,7 @@ type App struct {
 	me     Person
 	people []Person
 	groups []Group
+	gigs   []Gig
 
 	personClicks   []widget.Clickable
 	groupClicks    []widget.Clickable
@@ -33,13 +34,16 @@ type App struct {
 	favClick       widget.Clickable
 	sendClick      widget.Clickable
 	navProfileClick  widget.Clickable
+	navGigsClick     widget.Clickable
 	navContactsClick widget.Clickable
 	navChatsClick    widget.Clickable
+	gigClicks        []widget.Clickable
 	chatItemClicks   []widget.Clickable
 	chatEditor   widget.Editor
 	searchEditor widget.Editor
 
 	homeList       layout.List
+	gigsList       layout.List
 	chatsList      layout.List
 	profileList    layout.List
 	personList     layout.List
@@ -60,6 +64,7 @@ func newApp() *App {
 		me:     dummyMe(),
 		people: people,
 		groups: groups,
+		gigs:   dummyGigs(),
 
 		personClicks:    make([]widget.Clickable, len(people)),
 		groupClicks:     make([]widget.Clickable, len(groups)),
@@ -67,6 +72,9 @@ func newApp() *App {
 		groupFavClicks:  make([]widget.Clickable, len(groups)),
 
 		homeList: layout.List{
+			Axis: layout.Vertical,
+		},
+		gigsList: layout.List{
 			Axis: layout.Vertical,
 		},
 		profileList: layout.List{
@@ -99,6 +107,8 @@ func (receiver *App) Layout(gtx layout.Context) layout.Dimensions {
 	switch receiver.page {
 	case PageProfile:
 		return receiver.layoutProfilePage(gtx)
+	case PageGigs:
+		return receiver.layoutGigsPage(gtx)
 	case PageChats:
 		return receiver.layoutChatsPage(gtx)
 	case PagePersonDetail:

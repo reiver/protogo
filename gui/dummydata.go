@@ -150,6 +150,16 @@ type ResumeProject struct {
 	Type        string
 }
 
+type Gig struct {
+	Title       string
+	Company     string
+	Location    string
+	Type        string // "Full-time", "Contract", "Freelance", etc.
+	Description string
+	PostedBy    string
+	Timestamp   string
+}
+
 type Group struct {
 	Name     string
 	Members  []string
@@ -466,6 +476,47 @@ func dummyGroups() []Group {
 				{Sender: "Carol Reyes", Text: "I'll be there! Hoping to see the talk on Wasm.", Timestamp: "2025-12-05 18:10"},
 				{FromMe: true, Text: "Count me in.", Timestamp: "2025-12-05 18:15"},
 			},
+		},
+	}
+}
+
+func dummyGigs() []Gig {
+	return []Gig{
+		{
+			Title:       "Senior Go Engineer — Federation Team",
+			Company:     "Meshwork Labs",
+			Location:    "Vancouver, BC (Remote OK)",
+			Type:        "Full-time",
+			Description: "Join our team building ActivityPub-based services in Go. You'll work on federation protocols, HTTP Signatures, and WebFinger. 3+ years Go experience required.",
+			PostedBy:    "Alice Zhang",
+			Timestamp:   "2025-12-12",
+		},
+		{
+			Title:       "UX Designer — Decentralized Social App",
+			Company:     "OpenRelay Inc.",
+			Location:    "Toronto, ON (Hybrid)",
+			Type:        "Contract",
+			Description: "6-month contract to redesign the onboarding experience for our federation relay dashboard. Figma expertise required.",
+			PostedBy:    "David Park",
+			Timestamp:   "2025-12-10",
+		},
+		{
+			Title:       "DevRel Engineer",
+			Company:     "FediCorp",
+			Location:    "Remote",
+			Type:        "Full-time",
+			Description: "Help developers build on the Fediverse. Create tutorials, sample apps, and documentation for our federation APIs.",
+			PostedBy:    "Bob Okafor",
+			Timestamp:   "2025-12-08",
+		},
+		{
+			Title:       "Freelance Frontend Developer",
+			Company:     "",
+			Location:    "Remote",
+			Type:        "Freelance",
+			Description: "Looking for a frontend developer to build a Gio-based desktop client for a Fediverse project. Go experience a plus.",
+			PostedBy:    "Carol Reyes",
+			Timestamp:   "2025-12-05",
 		},
 	}
 }
