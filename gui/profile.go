@@ -1,13 +1,30 @@
 package gui
 
 import (
+	"image/color"
+
 	"gioui.org/layout"
 	"gioui.org/unit"
+	"gioui.org/widget"
+	"gioui.org/widget/material"
 
 	"protogo/cfg"
 )
 
 func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
+	// Handle Fedi ID submit.
+	for {
+		event, ok := receiver.fediIDEditor.Update(gtx)
+		if !ok {
+			break
+		}
+		if _, ok := event.(widget.SubmitEvent); ok {
+			var newFediID string = receiver.fediIDEditor.Text()
+			receiver.me.FediID = newFediID
+			persistProfileFediID(newFediID)
+		}
+	}
+
 	var me Person = receiver.me
 
 	var widgets []layout.Widget
@@ -32,13 +49,24 @@ func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
 		})
 	}
 
-	if "" != me.FediID {
-		widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return layoutDetailSection(gtx, receiver.theme, "Fediverse ID", me.FediID)
-			})
+	// Editable Fediverse ID field.
+	widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+		return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Bottom: unit.Dp(12)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+			return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					lbl := material.Caption(receiver.theme, "Fediverse ID")
+					lbl.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
+					return lbl.Layout(gtx)
+				}),
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					editor := material.Editor(receiver.theme, &receiver.fediIDEditor, "@you@example.com")
+					editor.Color = color.NRGBA{R: 0x3F, G: 0x51, B: 0xB5, A: 0xFF}
+					editor.HintColor = color.NRGBA{R: 0x99, G: 0x99, B: 0x99, A: 0xFF}
+					return editor.Layout(gtx)
+				}),
+			)
 		})
-	}
+	})
 
 	if "" != me.Note {
 		widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {

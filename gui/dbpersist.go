@@ -7,6 +7,14 @@ import (
 	"protogo/srv/log"
 )
 
+func persistProfileFediID(fediID string) {
+	go func() {
+		logger := logsrv.Logger()
+		db := dbsrv.WriteDB()
+		dbsrv.UpdateProfileFediID(logger, db, fediID)
+	}()
+}
+
 func persistPersonFavorite(person Person) {
 	if 0 == person.DBID {
 		return

@@ -92,13 +92,12 @@ func seeddb() {
 	}
 	dbsrv.SeedGigs(logger, db, seedGigs)
 
-	// Seed profile.
+	// Seed profile (FediID left empty — user enters it during onboarding).
 	dummyMe := guipkg.DummyMe()
 	sp := dbsrv.SeedProfile{
 		Name:    dummyMe.Name,
 		Title:   dummyMe.Title,
 		Company: dummyMe.Company,
-		FediID:  dummyMe.FediID,
 	}
 	for _, r := range dummyMe.Resumes {
 		sp.Resumes = append(sp.Resumes, dbsrv.SeedResume{

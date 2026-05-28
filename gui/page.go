@@ -3,7 +3,8 @@ package gui
 type Page int
 
 const (
-	PageProfile      Page = iota
+	PageOnboarding   Page = iota
+	PageProfile
 	PageGigs
 	PageHome
 	PageChats

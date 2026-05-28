@@ -36,6 +36,23 @@ func LoadProfile(logger log.Logger, db *sql.DB) (ProfileRow, bool, error) {
 	return p, true, nil
 }
 
+func UpdateProfileFediID(logger log.Logger, db *sql.DB, fediID string) error {
+	log := logger.Begin()
+	defer log.End()
+
+	if nil == db {
+		return erorr.Wrap(erorr.Error("nil db"), "failed to update profile fedi_id")
+	}
+
+	_, err := db.Exec(`UPDATE profile SET fedi_id = ? WHERE id = 1`, fediID)
+	if nil != err {
+		log.Error(field.S("failed to update profile fedi_id"), field.E(err), field.String("fedi_id", fediID))
+		return erorr.Wrap(err, "failed to update profile fedi_id")
+	}
+
+	return nil
+}
+
 func UpsertProfile(logger log.Logger, db *sql.DB, p ProfileRow) error {
 	log := logger.Begin()
 	defer log.End()

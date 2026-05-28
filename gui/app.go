@@ -39,8 +39,10 @@ type App struct {
 	navChatsClick    widget.Clickable
 	gigClicks        []widget.Clickable
 	chatItemClicks   []widget.Clickable
-	chatEditor   widget.Editor
-	searchEditor widget.Editor
+	onboardingSaveClick widget.Clickable
+	chatEditor          widget.Editor
+	searchEditor        widget.Editor
+	fediIDEditor        widget.Editor
 
 	homeList       layout.List
 	gigsList       layout.List
@@ -55,13 +57,24 @@ type App struct {
 func newApp() *App {
 	var people []Person = loadPeopleFromDB()
 	var groups []Group = loadGroupsFromDB()
+	var me Person = loadMeFromDB()
+
+	var fediIDEditor widget.Editor
+	fediIDEditor.SingleLine = true
+	fediIDEditor.Submit = true
+	fediIDEditor.SetText(me.FediID)
+
+	var startPage Page = PageHome
+	if "" == me.FediID {
+		startPage = PageOnboarding
+	}
 
 	return &App{
 		theme: material.NewTheme(),
 
-		page: PageHome,
+		page: startPage,
 
-		me:     loadMeFromDB(),
+		me:     me,
 		people: people,
 		groups: groups,
 		gigs:   loadGigsFromDB(),
@@ -96,6 +109,7 @@ func newApp() *App {
 			SingleLine: true,
 			Submit:     true,
 		},
+		fediIDEditor: fediIDEditor,
 		chatList: layout.List{
 			Axis:      layout.Vertical,
 			Alignment: layout.End,
@@ -105,6 +119,8 @@ func newApp() *App {
 
 func (receiver *App) Layout(gtx layout.Context) layout.Dimensions {
 	switch receiver.page {
+	case PageOnboarding:
+		return receiver.layoutOnboarding(gtx)
 	case PageProfile:
 		return receiver.layoutProfilePage(gtx)
 	case PageGigs:
