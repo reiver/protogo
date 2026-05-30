@@ -125,10 +125,14 @@ func loadMeFromDB() Person {
 	}
 
 	me := Person{
-		Name:    profileRow.Name,
-		Title:   profileRow.Title,
-		Company: profileRow.Company,
-		FediID:  profileRow.FediID,
+		Name:        profileRow.Name,
+		Title:       profileRow.Title,
+		Company:     profileRow.Company,
+		FediID:      profileRow.FediID,
+		SummaryHTML: profileRow.SummaryHTML,
+		IconURL:     profileRow.IconURL,
+		BannerURL:   profileRow.BannerURL,
+		ProfileURL:  profileRow.ProfileURL,
 	}
 
 	resumeRows, err := dbsrv.LoadResumesForProfile(logger, db)

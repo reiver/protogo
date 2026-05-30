@@ -1,15 +1,19 @@
 package gui
 
 type Person struct {
-	DBID     int64
-	Name     string
-	Title    string
-	Company  string
-	FediID   string
-	Note     string
-	Favorite bool
-	Resumes  []Resume
-	Messages []ChatMessage
+	DBID        int64
+	Name        string
+	Title       string
+	Company     string
+	FediID      string
+	Note        string
+	SummaryHTML string
+	IconURL     string
+	BannerURL   string
+	ProfileURL  string
+	Favorite    bool
+	Resumes     []Resume
+	Messages    []ChatMessage
 }
 
 type ChatMessage struct {

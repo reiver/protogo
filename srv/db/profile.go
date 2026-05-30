@@ -9,10 +9,14 @@ import (
 )
 
 type ProfileRow struct {
-	Name    string
-	Title   string
-	Company string
-	FediID  string
+	Name        string
+	Title       string
+	Company     string
+	FediID      string
+	SummaryHTML string
+	IconURL     string
+	BannerURL   string
+	ProfileURL  string
 }
 
 func LoadProfile(logger log.Logger, db *sql.DB) (ProfileRow, bool, error) {
@@ -24,7 +28,7 @@ func LoadProfile(logger log.Logger, db *sql.DB) (ProfileRow, bool, error) {
 	}
 
 	var p ProfileRow
-	err := db.QueryRow(`SELECT name, title, company, fedi_id FROM profile WHERE id = 1`).Scan(&p.Name, &p.Title, &p.Company, &p.FediID)
+	err := db.QueryRow(`SELECT name, title, company, fedi_id, summary_html, icon_url, banner_url, profile_url FROM profile WHERE id = 1`).Scan(&p.Name, &p.Title, &p.Company, &p.FediID, &p.SummaryHTML, &p.IconURL, &p.BannerURL, &p.ProfileURL)
 	if err == sql.ErrNoRows {
 		return ProfileRow{}, false, nil
 	}
@@ -53,6 +57,26 @@ func UpdateProfileFediID(logger log.Logger, db *sql.DB, fediID string) error {
 	return nil
 }
 
+func UpdateProfileFromActor(logger log.Logger, db *sql.DB, name string, summaryHTML string, iconURL string, bannerURL string, profileURL string) error {
+	log := logger.Begin()
+	defer log.End()
+
+	if nil == db {
+		return erorr.Wrap(erorr.Error("nil db"), "failed to update profile from actor")
+	}
+
+	_, err := db.Exec(
+		`UPDATE profile SET name = ?, summary_html = ?, icon_url = ?, banner_url = ?, profile_url = ? WHERE id = 1`,
+		name, summaryHTML, iconURL, bannerURL, profileURL,
+	)
+	if nil != err {
+		log.Error(field.S("failed to update profile from actor"), field.E(err))
+		return erorr.Wrap(err, "failed to update profile from actor")
+	}
+
+	return nil
+}
+
 func UpsertProfile(logger log.Logger, db *sql.DB, p ProfileRow) error {
 	log := logger.Begin()
 	defer log.End()
@@ -62,10 +86,10 @@ func UpsertProfile(logger log.Logger, db *sql.DB, p ProfileRow) error {
 	}
 
 	_, err := db.Exec(
-		`INSERT INTO profile (id, name, title, company, fedi_id) VALUES (1, ?, ?, ?, ?)
-		 ON CONFLICT(id) DO UPDATE SET name = ?, title = ?, company = ?, fedi_id = ?`,
-		p.Name, p.Title, p.Company, p.FediID,
-		p.Name, p.Title, p.Company, p.FediID,
+		`INSERT INTO profile (id, name, title, company, fedi_id, summary_html, icon_url, banner_url, profile_url) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
+		 ON CONFLICT(id) DO UPDATE SET name = ?, title = ?, company = ?, fedi_id = ?, summary_html = ?, icon_url = ?, banner_url = ?, profile_url = ?`,
+		p.Name, p.Title, p.Company, p.FediID, p.SummaryHTML, p.IconURL, p.BannerURL, p.ProfileURL,
+		p.Name, p.Title, p.Company, p.FediID, p.SummaryHTML, p.IconURL, p.BannerURL, p.ProfileURL,
 	)
 	if nil != err {
 		log.Error(field.S("failed to upsert profile"), field.E(err))

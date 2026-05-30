@@ -73,10 +73,14 @@ CREATE TABLE IF NOT EXISTS profile (
 	id INTEGER PRIMARY KEY CHECK (id = 1),
 	when_created INTEGER DEFAULT (strftime('%s','now')),
 
-	name    TEXT NOT NULL DEFAULT '',
-	title   TEXT NOT NULL DEFAULT '',
-	company TEXT NOT NULL DEFAULT '',
-	fedi_id TEXT NOT NULL DEFAULT ''
+	name         TEXT NOT NULL DEFAULT '',
+	title        TEXT NOT NULL DEFAULT '',
+	company      TEXT NOT NULL DEFAULT '',
+	fedi_id      TEXT NOT NULL DEFAULT '',
+	summary_html TEXT NOT NULL DEFAULT '',
+	icon_url     TEXT NOT NULL DEFAULT '',
+	banner_url   TEXT NOT NULL DEFAULT '',
+	profile_url  TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS resumes (

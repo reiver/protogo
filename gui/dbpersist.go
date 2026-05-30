@@ -15,6 +15,12 @@ func persistProfileFediID(fediID string) {
 	}()
 }
 
+func persistProfileFromActor(name string, summaryHTML string, iconURL string, bannerURL string, profileURL string) error {
+	logger := logsrv.Logger()
+	db := dbsrv.WriteDB()
+	return dbsrv.UpdateProfileFromActor(logger, db, name, summaryHTML, iconURL, bannerURL, profileURL)
+}
+
 func persistPersonFavorite(person Person) {
 	if 0 == person.DBID {
 		return

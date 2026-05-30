@@ -8,6 +8,7 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget"
 	"gioui.org/widget/material"
+	"gioui.org/x/richtext"
 
 	"codeberg.org/reiver/go-fediverseid"
 
@@ -16,22 +17,38 @@ import (
 
 func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
 	// Handle Fedi ID submit.
+	if !receiver.onboardingLoading {
+		for {
+			event, ok := receiver.fediIDEditor.Update(gtx)
+			if !ok {
+				break
+			}
+			if _, ok := event.(widget.SubmitEvent); ok {
+				var text string = strings.TrimSpace(receiver.fediIDEditor.Text())
+				if "" == text {
+					receiver.profileFediIDError = "Fediverse ID cannot be empty."
+				} else if _, err := fediverseid.ParseFediverseIDString(text); nil != err {
+					receiver.profileFediIDError = "Not a valid Fediverse ID. Expected format: @name@host"
+				} else {
+					receiver.profileFediIDError = ""
+					receiver.me.FediID = text
+					receiver.fediIDEditor.SetText(text)
+					persistProfileFediID(text)
+					receiver.startFetch(text)
+				}
+			}
+		}
+	}
+
+	// Handle bio link clicks.
 	for {
-		event, ok := receiver.fediIDEditor.Update(gtx)
+		span, event, ok := receiver.bioState.Update(gtx)
 		if !ok {
 			break
 		}
-		if _, ok := event.(widget.SubmitEvent); ok {
-			var text string = strings.TrimSpace(receiver.fediIDEditor.Text())
-			if "" == text {
-				receiver.profileFediIDError = "Fediverse ID cannot be empty."
-			} else if _, err := fediverseid.ParseFediverseIDString(text); nil != err {
-				receiver.profileFediIDError = "Not a valid Fediverse ID. Expected format: @name@host"
-			} else {
-				receiver.profileFediIDError = ""
-				receiver.me.FediID = text
-				receiver.fediIDEditor.SetText(text)
-				persistProfileFediID(text)
+		if event.Type == richtext.Click {
+			if url, ok := span.Get("url").(string); ok && "" != url {
+				_ = url // TODO: open in system browser
 			}
 		}
 	}
@@ -88,6 +105,24 @@ func (receiver *App) layoutProfilePage(gtx layout.Context) layout.Dimensions {
 			)
 		})
 	})
+
+	// Rich text bio.
+	if 0 < len(receiver.bioSpans) {
+		widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {
+			return layout.Inset{Left: unit.Dp(16), Right: unit.Dp(16), Bottom: unit.Dp(12)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						lbl := material.Caption(receiver.theme, "Bio")
+						lbl.Color = color.NRGBA{R: 0x66, G: 0x66, B: 0x66, A: 0xFF}
+						return lbl.Layout(gtx)
+					}),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return richtext.Text(&receiver.bioState, receiver.theme.Shaper, receiver.bioSpans...).Layout(gtx)
+					}),
+				)
+			})
+		})
+	}
 
 	if "" != me.Note {
 		widgets = append(widgets, func(gtx layout.Context) layout.Dimensions {

@@ -15,14 +15,14 @@ func Run() {
 	log := logsrv.Begin()
 	defer log.End()
 
-	application := newApp()
-
 	go func() {
 		w := new(app.Window)
 		w.Option(
 			app.Title(cfg.Name),
 			app.Size(unit.Dp(800), unit.Dp(600)),
 		)
+
+		application := newApp(w)
 
 		var ops op.Ops
 		for {
