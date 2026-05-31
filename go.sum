@@ -69,8 +69,8 @@ github.com/reiver/go-errhttp v1.1.1-0.20240827033330-e4ea888843cc h1:mNFBGeNf954
 github.com/reiver/go-errhttp v1.1.1-0.20240827033330-e4ea888843cc/go.mod h1:J55rONfn+39379roH0KxMCGv6w9ifhZIoSKaVswRUDk=
 github.com/reiver/go-etag v0.0.0-20241130123934-1a98d29fda6e h1:2FJeuK9Uc6BGLnXz4QOyfPefILfXGoPxiyCpgwz0WMU=
 github.com/reiver/go-etag v0.0.0-20241130123934-1a98d29fda6e/go.mod h1:TGoPFV3b4+PE2rF27XiFZLu6dg4faIEx7AUITCKyj4c=
-github.com/reiver/go-giotoast v0.0.0-20260530012135-fd9ea1aa6ef6 h1:3jOaO6XnAmhCC+VnFflytGjlzmwY6UxC91Xb/0YpYBU=
-github.com/reiver/go-giotoast v0.0.0-20260530012135-fd9ea1aa6ef6/go.mod h1:j2v0/7M0jMBokcce+EMYlK+Q0R0ZocV0fGao83YeLtM=
+github.com/reiver/go-giotoast v0.0.0-20260530213940-e1bb4d6f5a14 h1:2ttIaWxvcRwySI1ktA8GopSvpyrHrLFOqPp/NS4+i6A=
+github.com/reiver/go-giotoast v0.0.0-20260530213940-e1bb4d6f5a14/go.mod h1:j2v0/7M0jMBokcce+EMYlK+Q0R0ZocV0fGao83YeLtM=
 github.com/reiver/go-json v0.0.0-20260526180757-93b3b3c7827d h1:12ImYKLcDfoHpV4B683ZvV5X6oQqU0GwAajJJB7qoSY=
 github.com/reiver/go-json v0.0.0-20260526180757-93b3b3c7827d/go.mod h1:VefFGTBXCXZ7DwID0jXaAJBQoNnmDQitBQ80E73QPAg=
 github.com/reiver/go-jsonld v0.0.0-20260526195905-2d71d7d7decf h1:vL1cMfGs5FXsZiErO44WVFbL6+0RkL/r1q7W4BvwANM=

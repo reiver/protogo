@@ -187,7 +187,7 @@ func (receiver *App) drainFetchResults(gtx layout.Context) {
 		receiver.onboardingLoading = false
 
 		if nil != result.err {
-			receiver.toasts.ShowType(giotoast.TypeError, result.err.Error(), 5*time.Second, gtx.Now)
+			receiver.toasts.ShowType(gtx.Now, giotoast.TypeError, result.err.Error(), 5*time.Second)
 			if receiver.page == PageOnboarding {
 				receiver.onboardingError = result.err.Error()
 			} else {
@@ -212,9 +212,9 @@ func (receiver *App) drainFetchResults(gtx layout.Context) {
 
 		err := persistProfileFromActor(result.name, result.summaryHTML, result.iconURL, result.bannerURL, result.profileURL)
 		if nil != err {
-			receiver.toasts.ShowType(giotoast.TypeError, "Profile fetched but failed to save", 5*time.Second, gtx.Now)
+			receiver.toasts.ShowType(gtx.Now, giotoast.TypeError, "Profile fetched but failed to save", 5*time.Second)
 		} else {
-			receiver.toasts.ShowType(giotoast.TypeSuccess, "Profile updated", 3*time.Second, gtx.Now)
+			receiver.toasts.ShowType(gtx.Now, giotoast.TypeSuccess, "Profile updated", 3*time.Second)
 		}
 
 		if receiver.page == PageOnboarding {

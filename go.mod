@@ -14,7 +14,7 @@ require (
 	gioui.org v0.10.0
 	gioui.org/x v0.10.0
 	github.com/microcosm-cc/bluemonday v1.0.27
-	github.com/reiver/go-giotoast v0.0.0-20260530012135-fd9ea1aa6ef6
+	github.com/reiver/go-giotoast v0.0.0-20260530213940-e1bb4d6f5a14
 	golang.org/x/exp/shiny v0.0.0-20250408133849-7e4ce0ab07d0
 	golang.org/x/net v0.54.0
 	modernc.org/sqlite v1.50.1
